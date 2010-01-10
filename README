@@ -1,0 +1,5 @@
+Wrapper for glib functionality (does NOT include GIO stuff)
+
+Namespaced
+Currently working with glib 2.20
+Requires PHP 5.3

@@ -1,0 +1,317 @@
+Map of C symbols to PHP calls
+$Id: SYMBOLS 24 2009-05-14 19:45:06Z auroraeosrose $
+Last Glib version checked - 2.20.0
+
+GLib Fundamentals::
+
+Version Information -
+glib_major_version                      Glib::major_version;
+glib_minor_version                      Glib::minor_version
+glib_micro_version                      Glib::micro_version;
+glib_check_version()                    Glib::checkRuntimeVersion();
+GLIB_MAJOR_VERSION                      Glib::MAJOR_VERSION;
+GLIB_MINOR_VERSION                      Glib::MINOR_VERSION;
+GLIB_MICRO_VERSION                      Glib::MICRO_VERSION;
+GLIB_CHECK_VERSION                      Glib::checkVersion();
+
+GLib Core Application Support::
+
+The Main Event Loop -
+GMainLoop                               Glib\Main\Loop
+g_main_loop_new                         Glib\Main\Loop->__construct
+
+void                g_main_loop_run                     (GMainLoop *loop);
+void                g_main_loop_quit                    (GMainLoop *loop);
+gboolean            g_main_loop_is_running              (GMainLoop *loop);
+GMainContext *      g_main_loop_get_context             (GMainLoop *loop);
+#define             g_main_new                          (is_running)
+#define             g_main_destroy                      (loop)
+#define             g_main_run                          (loop)
+#define             g_main_quit                         (loop)
+#define             g_main_is_running                   (loop)
+
+#define             G_PRIORITY_HIGH
+#define             G_PRIORITY_DEFAULT
+#define             G_PRIORITY_HIGH_IDLE
+#define             G_PRIORITY_DEFAULT_IDLE
+#define             G_PRIORITY_LOW
+
+GMainContext                            Glib\Main\Context
+g_main_context_new                      Glib\Main\Context->__construct();
+g_main_context_default                  Glib\Main\Context::getDefault();
+g_main_context_iteration                Glib\Main\Context->iteration();
+g_main_context_pending                  Glib\Main\Context->pending();
+g_main_context_find_source_by_id        Glib\Main\Context->findSource();
+g_main_context_wakeup                   Glib\Main\Context->wakeup();
+g_main_context_prepare                  Glib\Main\Context->prepare();
+g_main_context_query                    Glib\Main\Context->query();
+g_main_context_check                    Glib\Main\Context->check();
+g_main_context_dispatch                 Glib\Main\Context->dispatch();
+g_main_context_set_poll_func            Glib\Main\Context->setPollFunc();
+g_main_context_get_poll_func            Glib\Main\Context->getPollFunc();
+(*GPollFunc)                            regular PHP callback
+g_main_context_add_poll                 Glib\Main\Context->addPoll();
+g_main_context_remove_poll              Glib\Main\Context->removePoll();
+
+g_main_depth                            Glib\Main::depth();
+GSource *           g_main_current_source               (void);
+#define             g_main_set_poll_func                (func)
+
+GSource *           g_timeout_source_new                (guint interval);
+GSource *           g_timeout_source_new_seconds        (guint interval);
+guint               g_timeout_add                       (guint interval,
+                                                         GSourceFunc function,
+                                                         gpointer data);
+guint               g_timeout_add_full                  (gint priority,
+                                                         guint interval,
+                                                         GSourceFunc function,
+                                                         gpointer data,
+                                                         GDestroyNotify notify);
+guint               g_timeout_add_seconds               (guint interval,
+                                                         GSourceFunc function,
+                                                         gpointer data);
+guint               g_timeout_add_seconds_full          (gint priority,
+                                                         guint interval,
+                                                         GSourceFunc function,
+                                                         gpointer data,
+                                                         GDestroyNotify notify);
+
+GSource *           g_idle_source_new                   (void);
+guint               g_idle_add                          (GSourceFunc function,
+                                                         gpointer data);
+guint               g_idle_add_full                     (gint priority,
+                                                         GSourceFunc function,
+                                                         gpointer data,
+                                                         GDestroyNotify notify);
+gboolean            g_idle_remove_by_data               (gpointer data);
+
+typedef             GPid;
+void                (*GChildWatchFunc)                  (GPid pid,
+                                                         gint status,
+                                                         gpointer data);
+GSource *           g_child_watch_source_new            (GPid pid);
+guint               g_child_watch_add                   (GPid pid,
+                                                         GChildWatchFunc function,
+                                                         gpointer data);
+guint               g_child_watch_add_full              (gint priority,
+                                                         GPid pid,
+                                                         GChildWatchFunc function,
+                                                         gpointer data,
+                                                         GDestroyNotify notify);
+
+                    GPollFD;
+gint                g_poll                              (GPollFD *fds,
+                                                         guint nfds,
+                                                         gint timeout);
+
+GSource                                 \Glib\Source
+
+
+void                (*GSourceDummyMarshal)              (void);
+                    GSourceFuncs;
+                    GSourceCallbackFuncs;
+
+g_source_new                            \Glib\Source->__construct();
+g_source_set_funcs                      \Glib\Source->setFunctions();
+g_source_attach                         \Glib\Source->attach();
+g_source_destroy                        \Glib\Source->destroy();
+g_source_is_destroyed                   \Glib\Source->isDestroyed();
+g_source_set_priority                   \Glib\Source->setPriority();
+g_source_get_priority                   \Glib\Source->getPriority();
+g_source_set_can_recurse                \Glib\Source->setCanRecurse();
+g_source_get_can_recurse                \Glib\Source->getCanRecurse();
+g_source_get_id                     (GSource *source);
+g_source_get_context                (GSource *source);
+g_source_set_callback               (GSource *source,
+                                                         GSourceFunc func,
+                                                         gpointer data,
+                                                         GDestroyNotify notify);
+gboolean            (*GSourceFunc)                      (gpointer data);
+g_source_set_callback_indirect      (GSource *source,
+                                                         gpointer callback_data,
+                                                         GSourceCallbackFuncs *callback_funcs);
+g_source_add_poll                   (GSource *source,
+                                                         GPollFD *fd);
+g_source_remove_poll                (GSource *source,
+                                                         GPollFD *fd);
+g_source_get_current_time           (GSource *source,
+                                                         GTimeVal *timeval);
+g_source_remove                     (guint tag);
+g_source_remove_by_funcs_user_data  (GSourceFuncs *funcs,
+                                                         gpointer user_data);
+g_source_remove_by_user_data        (gpointer user_data);
+
+GLib Utilities::
+
+Character Set Conversion -
+g_locale_to_utf8                        Glib::localeToUtf8();
+g_filename_from_uri                     Glib::filenameFromUri();
+g_filename_to_uri                       Glib::filenameToUri();
+g_get_filename_charsets                 Glib::filenameGetCharsets();
+g_filename_display_name                 Glib::displayName();
+g_filename_display_basename             Glib::displayBasename();
+g_locale_from_utf8                      Glib::localeFromUtf8();
+g_get_charset                           Glib::getCharset();
+
+Internationalization -
+g_get_language_names                    Glib::getLanguageNames();
+
+Automatic String Completion - TODO
+
+Timers -
+GTimer                                  Glib\Timer
+g_timer_new                             Glib\Timer->__construct
+g_timer_start                           Glib\Timer->start
+g_timer_stop                            Glib\Timer->stop
+g_timer_continue                        Glib\Timer->continue
+g_timer_elapsed                         Glib\Timer->elapsed
+g_timer_reset                           Glib\Timer->reset
+
+Spawning Processes - TODO
+
+Shell-related Utilities - TODO
+
+Commandline option parser - TODO
+
+Glob-style pattern matching - TODO
+
+Key-value file parser - TODO
+
+Bookmark file parser
+                    GBookmarkFile;
+#define             G_BOOKMARK_FILE_ERROR
+enum                GBookmarkFileError;
+GBookmarkFile *     g_bookmark_file_new                 (void);
+void                g_bookmark_file_free                (GBookmarkFile *bookmark);
+gboolean            g_bookmark_file_load_from_file      (GBookmarkFile *bookmark,
+                                                         const gchar *filename,
+                                                         GError **error);
+gboolean            g_bookmark_file_load_from_data      (GBookmarkFile *bookmark,
+                                                         const gchar *data,
+                                                         gsize length,
+                                                         GError **error);
+gboolean            g_bookmark_file_load_from_data_dirs (GBookmarkFile *bookmark,
+                                                         const gchar *file,
+                                                         gchar **full_path,
+                                                         GError **error);
+gchar *             g_bookmark_file_to_data             (GBookmarkFile *bookmark,
+                                                         gsize *length,
+                                                         GError **error);
+gboolean            g_bookmark_file_to_file             (GBookmarkFile *bookmark,
+                                                         const gchar *filename,
+                                                         GError **error);
+gboolean            g_bookmark_file_has_item            (GBookmarkFile *bookmark,
+                                                         const gchar *uri);
+gboolean            g_bookmark_file_has_group           (GBookmarkFile *bookmark,
+                                                         const gchar *uri,
+                                                         const gchar *group,
+                                                         GError **error);
+gboolean            g_bookmark_file_has_application     (GBookmarkFile *bookmark,
+                                                         const gchar *uri,
+                                                         const gchar *name,
+                                                         GError **error);
+gint                g_bookmark_file_get_size            (GBookmarkFile *bookmark);
+gchar **            g_bookmark_file_get_uris            (GBookmarkFile *bookmark,
+                                                         gsize *length);
+
+gchar *             g_bookmark_file_get_title           (GBookmarkFile *bookmark,
+                                                         const gchar *uri,
+                                                         GError **error);
+gchar *             g_bookmark_file_get_description     (GBookmarkFile *bookmark,
+                                                         const gchar *uri,
+                                                         GError **error);
+gchar *             g_bookmark_file_get_mime_type       (GBookmarkFile *bookmark,
+                                                         const gchar *uri,
+                                                         GError **error);
+gboolean            g_bookmark_file_get_is_private      (GBookmarkFile *bookmark,
+                                                         const gchar *uri,
+                                                         GError **error);
+gboolean            g_bookmark_file_get_icon            (GBookmarkFile *bookmark,
+                                                         const gchar *uri,
+                                                         gchar **href,
+                                                         gchar **mime_type,
+                                                         GError **error);
+time_t              g_bookmark_file_get_added           (GBookmarkFile *bookmark,
+                                                         const gchar *uri,
+                                                         GError **error);
+time_t              g_bookmark_file_get_modified        (GBookmarkFile *bookmark,
+                                                         const gchar *uri,
+                                                         GError **error);
+time_t              g_bookmark_file_get_visited         (GBookmarkFile *bookmark,
+                                                         const gchar *uri,
+                                                         GError **error);
+gchar **            g_bookmark_file_get_groups          (GBookmarkFile *bookmark,
+                                                         const gchar *uri,
+                                                         gsize *length,
+                                                         GError **error);
+gchar **            g_bookmark_file_get_applications    (GBookmarkFile *bookmark,
+                                                         const gchar *uri,
+                                                         gsize *length,
+                                                         GError **error);
+gboolean            g_bookmark_file_get_app_info        (GBookmarkFile *bookmark,
+                                                         const gchar *uri,
+                                                         const gchar *name,
+                                                         gchar **exec,
+                                                         guint *count,
+                                                         time_t *stamp,
+                                                         GError **error);
+
+void                g_bookmark_file_set_title           (GBookmarkFile *bookmark,
+                                                         const gchar *uri,
+                                                         const gchar *title);
+void                g_bookmark_file_set_description     (GBookmarkFile *bookmark,
+                                                         const gchar *uri,
+                                                         const gchar *description);
+void                g_bookmark_file_set_mime_type       (GBookmarkFile *bookmark,
+                                                         const gchar *uri,
+                                                         const gchar *mime_type);
+void                g_bookmark_file_set_is_private      (GBookmarkFile *bookmark,
+                                                         const gchar *uri,
+                                                         gboolean is_private);
+void                g_bookmark_file_set_icon            (GBookmarkFile *bookmark,
+                                                         const gchar *uri,
+                                                         const gchar *href,
+                                                         const gchar *mime_type);
+void                g_bookmark_file_set_added           (GBookmarkFile *bookmark,
+                                                         const gchar *uri,
+                                                         time_t added);
+void                g_bookmark_file_set_groups          (GBookmarkFile *bookmark,
+                                                         const gchar *uri,
+                                                         const gchar **groups,
+                                                         gsize length);
+void                g_bookmark_file_set_modified        (GBookmarkFile *bookmark,
+                                                         const gchar *uri,
+                                                         time_t modified);
+void                g_bookmark_file_set_visited         (GBookmarkFile *bookmark,
+                                                         const gchar *uri,
+                                                         time_t visited);
+gboolean            g_bookmark_file_set_app_info        (GBookmarkFile *bookmark,
+                                                         const gchar *uri,
+                                                         const gchar *name,
+                                                         const gchar *exec,
+                                                         gint count,
+                                                         time_t stamp,
+                                                         GError **error);
+void                g_bookmark_file_add_group           (GBookmarkFile *bookmark,
+                                                         const gchar *uri,
+                                                         const gchar *group);
+void                g_bookmark_file_add_application     (GBookmarkFile *bookmark,
+                                                         const gchar *uri,
+                                                         const gchar *name,
+                                                         const gchar *exec);
+gboolean            g_bookmark_file_remove_group        (GBookmarkFile *bookmark,
+                                                         const gchar *uri,
+                                                         const gchar *group,
+                                                         GError **error);
+gboolean            g_bookmark_file_remove_application  (GBookmarkFile *bookmark,
+                                                         const gchar *uri,
+                                                         const gchar *name,
+                                                         GError **error);
+gboolean            g_bookmark_file_remove_item         (GBookmarkFile *bookmark,
+                                                         const gchar *uri,
+                                                         GError **error);
+gboolean            g_bookmark_file_move_item           (GBookmarkFile *bookmark,
+                                                         const gchar *old_uri,
+                                                         const gchar *new_uri,
+                                                         GError **error);
+

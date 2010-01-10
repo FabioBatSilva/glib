@@ -1,0 +1,7 @@
+1. Implement items in SYMBOLS that I know we want to wrap
+
+2. Go through items in IGNORED marked TODO and finish and decide on items that we're unsure of
+
+3. Do the main loop wrapping - will take some work for signals/callbacks and PHP to all cooperate
+
+4. Document

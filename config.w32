@@ -1,0 +1,10 @@
+/* $Id: config.w32 24 2009-05-14 19:45:06Z auroraeosrose $ */
+
+ARG_WITH("glib", "Glib Library Bindings", "no");
+
+if (PHP_GLIB != "no") {
+	CHECK_LIB("glib-2.0.lib", "glib", PHP_GLIB);
+	CHECK_HEADER_ADD_INCLUDE("glib.h", "CFLAGS_GLIB", null, null, true);
+	EXTENSION("glib", "glib.c glib_exception.c glib_main.c glib_maincontext.c glib_timer.c glib_bookmarkfile.c glib_option.c glib_source.c");
+	AC_DEFINE("HAVE_GLIB", 1);
+}
