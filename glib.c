@@ -440,6 +440,20 @@ PHP_METHOD(Glib, userDataDir)
 }
 /* }}} */
 
+/* {{{ proto string Glib::userHomeDir()
+	   Gets the current user's home directory as defined in the password database.
+*/
+PHP_METHOD(Glib, userHomeDir)
+{
+	if (zend_parse_parameters_none() == FAILURE) {
+		return;
+	}
+
+	const char *name = g_get_home_dir();
+	RETURN_STRING(name, 1);
+}
+/* }}} */
+
 
 /* {{{ proto string Glib::userSpecialDir(int user_dir_type)
 	   Returns the full path of a special directory using its logical id.
@@ -499,6 +513,7 @@ const zend_function_entry glib_methods[] = {
 	PHP_ME(Glib, userCacheDir,        NULL,                      ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	PHP_ME(Glib, userConfigDir,       NULL,                      ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	PHP_ME(Glib, userDataDir,         NULL,                      ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	PHP_ME(Glib, userHomeDir,         NULL,                      ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	PHP_ME(Glib, userSpecialDir,      glib_userSpecialDir_args,  ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 
 	{NULL, NULL, NULL}
