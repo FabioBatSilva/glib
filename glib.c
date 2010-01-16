@@ -38,6 +38,10 @@ ZEND_BEGIN_ARG_INFO_EX(glib_string_args, ZEND_SEND_BY_VAL, ZEND_RETURN_VALUE, 1)
 	ZEND_ARG_INFO(0, text)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_INFO_EX(glib_userSpecialDir_args, ZEND_SEND_BY_VAL, ZEND_RETURN_VALUE, 1)
+	ZEND_ARG_INFO(0, user_dir_type)
+ZEND_END_ARG_INFO()
+
 /* {{{ proto string Glib::checkRuntimeVersion()
 	 Returns NULL if the GLib library is compatible with the given version, or a string describing the version mismatch.
 	 Compatibility is defined by two things: first the version of the running library is newer than the version
@@ -324,21 +328,95 @@ PHP_METHOD(Glib, shellUnquote)
 }
 /* }}} */
 
+/* {{{ proto string Glib::userName()
+	   Gets the user name of the current user
+*/
+PHP_METHOD(Glib, userName)
+{
+	if (zend_parse_parameters_none() == FAILURE) {
+		return;
+	}
+
+	const char *name = g_get_user_name();
+	RETURN_STRING(name, 1);
+}
+/* }}} */
+
+/* {{{ proto string Glib::userRealName()
+	   Gets the real name of the user
+*/
+PHP_METHOD(Glib, userRealName)
+{
+	if (zend_parse_parameters_none() == FAILURE) {
+		return;
+	}
+
+	const char *name = g_get_real_name();
+	RETURN_STRING(name, 1);
+}
+/* }}} */
+
+/* {{{ proto string Glib::userSpecialDir(int user_dir_type)
+	   Returns the full path of a special directory using its logical id.
+	   One of Glib::USER_DIRECTORY_* constants is supposed to be used as parameter
+*/
+PHP_METHOD(Glib, userSpecialDir)
+{
+	long dir_type;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &dir_type) == FAILURE) {
+		return;
+	}
+
+	if (dir_type < 0 || dir_type >= G_USER_N_DIRECTORIES) {
+		zval *exception;
+
+		MAKE_STD_ZVAL(exception);
+		object_init_ex(exception, glib_ce_exception);
+		zend_update_property_string(glib_ce_exception, exception, "message", sizeof("message")-1, "invalid user-directory type" TSRMLS_CC);
+		zend_throw_exception_object(exception TSRMLS_CC);
+
+		return;
+	}
+
+	const char *retval = g_get_user_special_dir(dir_type);
+
+	if (NULL == retval) {
+		RETURN_NULL();
+	}
+
+	RETURN_STRING(retval, 1);
+}
+/* }}} */
+
 /* {{{ glib_class_functions[] */
 const zend_function_entry glib_methods[] = {
-	PHP_ME(Glib, checkVersion, glib_checkVersion_args, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
-	PHP_ME(Glib, checkRuntimeVersion, glib_checkVersion_args, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
-	PHP_ME(Glib, localeToUtf8, glib_string_args, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
-	PHP_ME(Glib, localeFromUtf8, glib_string_args, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
-	PHP_ME(Glib, getLanguageNames, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
-	PHP_ME(Glib, displayName, glib_string_args, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
-	PHP_ME(Glib, displayBasename, glib_string_args, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
-	PHP_ME(Glib, filenameFromUri, glib_string_args, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
-	PHP_ME(Glib, filenameToUri, glib_string_args, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
-	PHP_ME(Glib, filenameGetCharsets, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
-	PHP_ME(Glib, getCharset, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
-	PHP_ME(Glib, shellQuote, glib_string_args, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
-	PHP_ME(Glib, shellUnquote, glib_string_args, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	PHP_ME(Glib, checkVersion,        glib_checkVersion_args,    ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	PHP_ME(Glib, checkRuntimeVersion, glib_checkVersion_args,    ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	PHP_ME(Glib, localeToUtf8,        glib_string_args,          ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	PHP_ME(Glib, localeFromUtf8,      glib_string_args,          ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	PHP_ME(Glib, getLanguageNames,    NULL,                      ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	PHP_ME(Glib, displayName,         glib_string_args,          ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	PHP_ME(Glib, displayBasename,     glib_string_args,          ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	PHP_ME(Glib, filenameFromUri,     glib_string_args,          ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	PHP_ME(Glib, filenameToUri,       glib_string_args,          ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	PHP_ME(Glib, filenameGetCharsets, NULL,                      ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	PHP_ME(Glib, getCharset,          NULL,                      ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	PHP_ME(Glib, shellQuote,          glib_string_args,          ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	PHP_ME(Glib, shellUnquote,        glib_string_args,          ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+
+	PHP_ME(Glib, userName,            NULL,                      ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	PHP_ME(Glib, userRealName,        NULL,                      ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+
+	// Directories
+	// PHP_ME(Glib, systemDataDirs,       NULL,                     ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	// PHP_ME(Glib, systemConfigDirs,     NULL,                     ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	// PHP_ME(Glib, tmpDir,               NULL,                     ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	// PHP_ME(Glib, userCacheDir,         NULL,                     ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	// PHP_ME(Glib, userConfigDir,        NULL,                     ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	// PHP_ME(Glib, userDataDir,          NULL,                     ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	// PHP_ME(Glib, userConfigDir,        NULL,                     ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	PHP_ME(Glib, userSpecialDir,       glib_userSpecialDir_args, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 
 	{NULL, NULL, NULL}
 };
@@ -381,6 +459,15 @@ PHP_MINIT_FUNCTION(glib)
 	zend_declare_class_constant_long(glib_ce_glib, "major_version", sizeof("major_version")-1, glib_major_version TSRMLS_CC);
 	zend_declare_class_constant_long(glib_ce_glib, "minor_version", sizeof("minor_version")-1, glib_minor_version TSRMLS_CC);
 	zend_declare_class_constant_long(glib_ce_glib, "micro_version", sizeof("micro_version")-1, glib_micro_version TSRMLS_CC);
+
+	zend_declare_class_constant_long(glib_ce_glib, "USER_DIRECTORY_DESKTOP",      sizeof("USER_DIRECTORY_DESKTOP")-1,      G_USER_DIRECTORY_DESKTOP TSRMLS_CC);
+	zend_declare_class_constant_long(glib_ce_glib, "USER_DIRECTORY_DOCUMENTS",    sizeof("USER_DIRECTORY_DOCUMENTS")-1,    G_USER_DIRECTORY_DOCUMENTS TSRMLS_CC);
+	zend_declare_class_constant_long(glib_ce_glib, "USER_DIRECTORY_DOWNLOAD",     sizeof("USER_DIRECTORY_DOWNLOAD")-1,     G_USER_DIRECTORY_DOWNLOAD TSRMLS_CC);
+	zend_declare_class_constant_long(glib_ce_glib, "USER_DIRECTORY_MUSIC",        sizeof("USER_DIRECTORY_MUSIC")-1,        G_USER_DIRECTORY_MUSIC TSRMLS_CC);
+	zend_declare_class_constant_long(glib_ce_glib, "USER_DIRECTORY_PICTURES",     sizeof("USER_DIRECTORY_PICTURES")-1,     G_USER_DIRECTORY_PICTURES TSRMLS_CC);
+	zend_declare_class_constant_long(glib_ce_glib, "USER_DIRECTORY_PUBLIC_SHARE", sizeof("USER_DIRECTORY_PUBLIC_SHARE")-1, G_USER_DIRECTORY_PUBLIC_SHARE TSRMLS_CC);
+	zend_declare_class_constant_long(glib_ce_glib, "USER_DIRECTORY_TEMPLATES",    sizeof("USER_DIRECTORY_TEMPLATES")-1,    G_USER_DIRECTORY_TEMPLATES TSRMLS_CC);
+	zend_declare_class_constant_long(glib_ce_glib, "USER_DIRECTORY_VIDEOS",       sizeof("USER_DIRECTORY_VIDEOS")-1,       G_USER_DIRECTORY_VIDEOS TSRMLS_CC);
 
 	PHP_MINIT(glib_exception)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(glib_main)(INIT_FUNC_ARGS_PASSTHRU);

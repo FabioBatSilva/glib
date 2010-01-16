@@ -86,6 +86,8 @@ PHP_MINIT_FUNCTION(glib_timer);
 PHP_MINIT_FUNCTION(glib_bookmarkfile);
 PHP_MINIT_FUNCTION(glib_option);
 
+extern zend_class_entry *glib_ce_exception;
+
 #endif
 
 /*
