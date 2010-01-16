@@ -85,7 +85,7 @@ PHP_METHOD(Glib, checkVersion)
 PHP_METHOD(Glib, localeToUtf8)
 {
 	char *str_utf8, *locale;
-	long length;
+	int length;
 	GError *error = NULL;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &locale, &length) == FAILURE) {
@@ -106,7 +106,7 @@ PHP_METHOD(Glib, localeToUtf8)
 PHP_METHOD(Glib, localeFromUtf8)
 {
 	char *str_utf8, *locale;
-	long length;
+	int length;
 	GError *error = NULL;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &locale, &length) == FAILURE) {
@@ -148,7 +148,7 @@ PHP_METHOD(Glib, getLanguageNames)
 PHP_METHOD(Glib, displayName)
 {
 	char *filename, *display_name;
-	long length;
+	int length;
 	GError *error = NULL;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &filename, &length) == FAILURE) {
@@ -169,7 +169,7 @@ PHP_METHOD(Glib, displayName)
 PHP_METHOD(Glib, displayBasename)
 {
 	char *filename, *display_name;
-	long length;
+	int length;
 	GError *error = NULL;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &filename, &length) == FAILURE) {
@@ -190,7 +190,7 @@ PHP_METHOD(Glib, displayBasename)
 PHP_METHOD(Glib, filenameFromUri)
 {
 	char *filename, *uri;
-	long length;
+	int length;
 	GError *error = NULL;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &uri, &length) == FAILURE) {
@@ -211,7 +211,7 @@ PHP_METHOD(Glib, filenameFromUri)
 PHP_METHOD(Glib, filenameToUri)
 {
 	char *filename, *uri;
-	long length;
+	int length;
 	GError *error = NULL;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &filename, &length) == FAILURE) {
@@ -287,7 +287,7 @@ PHP_METHOD(Glib, getCharset)
 PHP_METHOD(Glib, shellQuote)
 {
 	char *string, *quoted_string;
-	long length;
+	int length;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &string, &length) == FAILURE) {
 		return;
@@ -309,7 +309,7 @@ PHP_METHOD(Glib, shellQuote)
 PHP_METHOD(Glib, shellUnquote)
 {
 	char *string, *unquoted_string;
-	long length;
+	int length;
 	GError *error = NULL;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &string, &length) == FAILURE) {
