@@ -30,11 +30,11 @@ zend_class_entry *glib_ce_bookmarkfile;
 /* for extended classes, make sure internal object exists properly */
 static inline glib_bookmarkfile_object* glib_bookmarkfile_object_get(zval *zobj TSRMLS_DC)
 {
-    glib_bookmarkfile_object *pobj = zend_object_store_get_object(zobj TSRMLS_CC);
-    if (pobj->bookmarkfile == NULL) {
+	glib_bookmarkfile_object *pobj = zend_object_store_get_object(zobj TSRMLS_CC);
+	if (pobj->bookmarkfile == NULL) {
 		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Internal object missing in %s class, you must call parent::__construct in extended classes", Z_OBJCE_P(zobj)->name);
-    }
-    return pobj;
+	}
+	return pobj;
 }
 
 /* {{{ glib_bookmarkfile_free_storage
@@ -111,7 +111,7 @@ PHP_METHOD(Glib_Bookmarkfile, __toString)
 	if (zend_parse_parameters_none() == FAILURE) {
 		return;
 	}
-    
+
 	buffer = g_bookmark_file_to_data(bookmark_object->bookmarkfile, &length, error);
 
 	if (php_glib_handle_gerror(error TSRMLS_CC)) {

@@ -34,11 +34,11 @@ ZEND_END_ARG_INFO()
 /* for extended classes, make sure internal object exists properly */
 static inline glib_maincontext_object* glib_maincontext_object_get(zval *zobj TSRMLS_DC)
 {
-    glib_maincontext_object *pobj = zend_object_store_get_object(zobj TSRMLS_CC);
-    if (pobj->maincontext == NULL) {
+	glib_maincontext_object *pobj = zend_object_store_get_object(zobj TSRMLS_CC);
+	if (pobj->maincontext == NULL) {
 		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Internal object missing in %s class, you must call parent::__construct in extended classes", Z_OBJCE_P(zobj)->name);
-    }
-    return pobj;
+	}
+	return pobj;
 }
 
 /* {{{ glib_maincontext_free_storage
@@ -116,7 +116,7 @@ PHP_METHOD(Glib_Main_Context, getDefault)
 	}
 
 	object_init_ex(return_value, glib_ce_maincontext);
-    context_object = (glib_maincontext_object *)zend_objects_get_address(return_value TSRMLS_CC);
+	context_object = (glib_maincontext_object *)zend_objects_get_address(return_value TSRMLS_CC);
 	context_object->maincontext = g_main_context_new();
 	g_main_context_ref(context_object->maincontext);
 }

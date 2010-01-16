@@ -86,7 +86,7 @@ PHP_METHOD(Glib, localeToUtf8)
 {
 	char *str_utf8, *locale;
 	long length;
-    GError *error = NULL;
+	GError *error = NULL;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &locale, &length) == FAILURE) {
 		return;
@@ -107,7 +107,7 @@ PHP_METHOD(Glib, localeFromUtf8)
 {
 	char *str_utf8, *locale;
 	long length;
-    GError *error = NULL;
+	GError *error = NULL;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &locale, &length) == FAILURE) {
 		return;
@@ -147,19 +147,19 @@ PHP_METHOD(Glib, getLanguageNames)
       */
 PHP_METHOD(Glib, displayName)
 {
-   char *filename, *display_name;
-   long length;
-   GError *error = NULL;
+	char *filename, *display_name;
+	long length;
+	GError *error = NULL;
 
-   if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &filename, &length) == FAILURE) {
-       return;
-   }
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &filename, &length) == FAILURE) {
+		return;
+	}
 
-   display_name = g_filename_display_name((const gchar*)filename);
-   if (php_glib_handle_gerror(&error TSRMLS_CC)) {
-       return;
-   }
-   RETURN_STRING(display_name, 1);
+	display_name = g_filename_display_name((const gchar*)filename);
+	if (php_glib_handle_gerror(&error TSRMLS_CC)) {
+		return;
+	}
+	RETURN_STRING(display_name, 1);
 }
 /* }}} */
 
@@ -168,19 +168,19 @@ PHP_METHOD(Glib, displayName)
       */
 PHP_METHOD(Glib, displayBasename)
 {
-   char *filename, *display_name;
-   long length;
-   GError *error = NULL;
+	char *filename, *display_name;
+	long length;
+	GError *error = NULL;
 
-   if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &filename, &length) == FAILURE) {
-       return;
-   }
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &filename, &length) == FAILURE) {
+		return;
+	}
 
-   display_name = g_filename_display_basename((const gchar*)filename);
-   if (php_glib_handle_gerror(&error TSRMLS_CC)) {
-       return;
-   }
-   RETURN_STRING(display_name, 1);
+	display_name = g_filename_display_basename((const gchar*)filename);
+	if (php_glib_handle_gerror(&error TSRMLS_CC)) {
+		return;
+	}
+	RETURN_STRING(display_name, 1);
 }
 /* }}} */
 
@@ -189,19 +189,19 @@ PHP_METHOD(Glib, displayBasename)
       */
 PHP_METHOD(Glib, filenameFromUri)
 {
-   char *filename, *uri;
-   long length;
-   GError *error = NULL;
+	char *filename, *uri;
+	long length;
+	GError *error = NULL;
 
-   if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &uri, &length) == FAILURE) {
-       return;
-   }
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &uri, &length) == FAILURE) {
+		return;
+	}
 
-   filename = g_filename_from_uri((const gchar*)uri, NULL, &error);
-   if (php_glib_handle_gerror(&error TSRMLS_CC)) {
-       return;
-   }
-   RETURN_STRING(filename, 1);
+	filename = g_filename_from_uri((const gchar*)uri, NULL, &error);
+	if (php_glib_handle_gerror(&error TSRMLS_CC)) {
+		return;
+	}
+	RETURN_STRING(filename, 1);
 }
 /* }}} */
 
@@ -210,24 +210,24 @@ PHP_METHOD(Glib, filenameFromUri)
       */
 PHP_METHOD(Glib, filenameToUri)
 {
-   char *filename, *uri;
-   long length;
-   GError *error = NULL;
+	char *filename, *uri;
+	long length;
+	GError *error = NULL;
 
-   if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &filename, &length) == FAILURE) {
-       return;
-   }
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &filename, &length) == FAILURE) {
+		return;
+	}
 
-   uri = g_filename_to_uri((const gchar*)filename, NULL, &error);
-   if (php_glib_handle_gerror(&error TSRMLS_CC)) {
-       return;
-   }
-   RETURN_STRING(uri, 1);
+	uri = g_filename_to_uri((const gchar*)filename, NULL, &error);
+	if (php_glib_handle_gerror(&error TSRMLS_CC)) {
+		return;
+	}
+	RETURN_STRING(uri, 1);
 }
 /* }}} */
 
 /* {{{ proto array Glib::filenameGetCharsets()
- 	   Determines the preferred character sets used for filenames. 
+	   Determines the preferred character sets used for filenames. 
 	   Returns an array. The first element is a boolean indicating if the filename encoding
 	   is UTF-8. The second element is the filename encoding.
 	   The final element is an array of character sets used when trying to generate a
@@ -286,15 +286,15 @@ PHP_METHOD(Glib, getCharset)
       */
 PHP_METHOD(Glib, shellQuote)
 {
-   char *string, *quoted_string;
-   long length;
+	char *string, *quoted_string;
+	long length;
 
-   if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &string, &length) == FAILURE) {
-       return;
-   }
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &string, &length) == FAILURE) {
+		return;
+	}
 
-   quoted_string = g_shell_quote((const gchar*)string);
-   RETURN_STRING(quoted_string, 1);
+	quoted_string = g_shell_quote((const gchar*)string);
+	RETURN_STRING(quoted_string, 1);
 }
 /* }}} */
 
@@ -306,18 +306,21 @@ PHP_METHOD(Glib, shellQuote)
 	   variables, backticks, etc. will be passed through literally instead of
 	   being expanded).
       */
-PHP_METHOD(Glib, shellUnquote) { char *string, *unquoted_string; long length;
+PHP_METHOD(Glib, shellUnquote)
+{
+	char *string, *unquoted_string;
+	long length;
 	GError *error = NULL;
 
-   if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &string, &length) == FAILURE) {
-       return;
-   }
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &string, &length) == FAILURE) {
+		return;
+	}
 
-   unquoted_string = g_shell_unquote((const gchar*)string, &error);
-   if (php_glib_handle_gerror(&error TSRMLS_CC)) {
-       return;
-   }
-   RETURN_STRING(unquoted_string, 1);
+	unquoted_string = g_shell_unquote((const gchar*)string, &error);
+	if (php_glib_handle_gerror(&error TSRMLS_CC)) {
+		return;
+	}
+	RETURN_STRING(unquoted_string, 1);
 }
 /* }}} */
 
@@ -329,13 +332,13 @@ const zend_function_entry glib_methods[] = {
 	PHP_ME(Glib, localeFromUtf8, glib_string_args, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	PHP_ME(Glib, getLanguageNames, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	PHP_ME(Glib, displayName, glib_string_args, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
-    PHP_ME(Glib, displayBasename, glib_string_args, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
-    PHP_ME(Glib, filenameFromUri, glib_string_args, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
-    PHP_ME(Glib, filenameToUri, glib_string_args, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	PHP_ME(Glib, displayBasename, glib_string_args, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	PHP_ME(Glib, filenameFromUri, glib_string_args, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	PHP_ME(Glib, filenameToUri, glib_string_args, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	PHP_ME(Glib, filenameGetCharsets, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	PHP_ME(Glib, getCharset, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
-    PHP_ME(Glib, shellQuote, glib_string_args, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
-    PHP_ME(Glib, shellUnquote, glib_string_args, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	PHP_ME(Glib, shellQuote, glib_string_args, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	PHP_ME(Glib, shellUnquote, glib_string_args, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 
 	{NULL, NULL, NULL}
 };

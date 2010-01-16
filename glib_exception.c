@@ -34,7 +34,7 @@ PHP_GLIB_API zend_bool php_glib_handle_gerror(GError **error TSRMLS_DC)
 	zval *exception;
 
 	if (error == NULL || *error == NULL) {
-        return FALSE;
+		return FALSE;
 	}
 
 	MAKE_STD_ZVAL(exception);
@@ -47,7 +47,7 @@ PHP_GLIB_API zend_bool php_glib_handle_gerror(GError **error TSRMLS_DC)
 
 	zend_throw_exception_object(exception TSRMLS_CC);
 
-    g_clear_error(error);
+	g_clear_error(error);
 
 	return TRUE;
 }

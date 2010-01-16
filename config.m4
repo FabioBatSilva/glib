@@ -10,7 +10,9 @@ if test "$PHP_GLIB" != "no"; then
   PHP_SUBST(GLIB_SHARED_LIBADD)
   AC_DEFINE(HAVE_GLIB, 1, [ ])
 
-  PHP_NEW_EXTENSION(glib, glib.c glib_exception.c glib_main.c glib_maincontext.c glib_timer.c glib_bookmarkfile.c glib_option.c glib_source.c, $ext_shared)
+  PHP_NEW_EXTENSION(glib, \
+    glib.c glib_exception.c glib_main.c glib_maincontext.c glib_timer.c glib_bookmarkfile.c glib_option.c glib_source.c \
+    , $ext_shared)
   
   EXT_GLIB_HEADERS="php_glib.h"
 

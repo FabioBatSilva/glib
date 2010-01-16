@@ -30,11 +30,11 @@ zend_class_entry *glib_ce_source;
 /* for extended classes, make sure internal object exists properly */
 static inline glib_source_object* glib_source_object_get(zval *zobj TSRMLS_DC)
 {
-    glib_source_object *pobj = zend_object_store_get_object(zobj TSRMLS_CC);
-    if (pobj->source == NULL) {
+	glib_source_object *pobj = zend_object_store_get_object(zobj TSRMLS_CC);
+	if (pobj->source == NULL) {
 		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Internal object missing in %s class, you must call parent::__construct in extended classes", Z_OBJCE_P(zobj)->name);
-    }
-    return pobj;
+	}
+	return pobj;
 }
 
 /* {{{ glib_source_free_storage
