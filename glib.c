@@ -356,6 +356,46 @@ PHP_METHOD(Glib, userRealName)
 }
 /* }}} */
 
+/* {{{ proto array Glib::systemDataDirs()
+	   Returns an ordered list of base directories in which to access system-wide application data.
+*/
+PHP_METHOD(Glib, systemDataDirs)
+{
+	if (zend_parse_parameters_none() == FAILURE) {
+		return;
+	}
+
+	const gchar* const *dir = g_get_system_data_dirs();
+
+	array_init(return_value);
+
+	while (*dir != NULL) {
+		add_next_index_string(return_value, *dir, 1);
+		dir++;
+	}
+}
+/* }}} */
+
+/* {{{ proto array Glib::systemConfigDirs()
+	   Returns an ordered list of base directories in which to access system-wide configuration information.
+*/
+PHP_METHOD(Glib, systemConfigDirs)
+{
+	if (zend_parse_parameters_none() == FAILURE) {
+		return;
+	}
+
+	const gchar* const *dir = g_get_system_config_dirs();
+
+	array_init(return_value);
+
+	while (*dir != NULL) {
+		add_next_index_string(return_value, *dir, 1);
+		dir++;
+	}
+}
+/* }}} */
+
 /* {{{ proto string Glib::userSpecialDir(int user_dir_type)
 	   Returns the full path of a special directory using its logical id.
 	   One of Glib::USER_DIRECTORY_* constants is supposed to be used as parameter
@@ -409,14 +449,14 @@ const zend_function_entry glib_methods[] = {
 	PHP_ME(Glib, userRealName,        NULL,                      ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 
 	// Directories
-	// PHP_ME(Glib, systemDataDirs,       NULL,                     ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
-	// PHP_ME(Glib, systemConfigDirs,     NULL,                     ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	PHP_ME(Glib, systemDataDirs,      NULL,                      ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	PHP_ME(Glib, systemConfigDirs,    NULL,                      ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	// PHP_ME(Glib, tmpDir,               NULL,                     ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	// PHP_ME(Glib, userCacheDir,         NULL,                     ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	// PHP_ME(Glib, userConfigDir,        NULL,                     ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	// PHP_ME(Glib, userDataDir,          NULL,                     ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	// PHP_ME(Glib, userConfigDir,        NULL,                     ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
-	PHP_ME(Glib, userSpecialDir,       glib_userSpecialDir_args, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	PHP_ME(Glib, userSpecialDir,      glib_userSpecialDir_args,  ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 
 	{NULL, NULL, NULL}
 };
