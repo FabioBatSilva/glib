@@ -30,9 +30,9 @@ $object->continue();
 --EXPECTF--
 
 Warning: Glib\Timer::continue(): Cannot continue a Timer that has not been stopped in %s on line %d
-%d
+%f
 
 Warning: Glib\Timer::continue(): Cannot continue a Timer that has not been stopped in %s on line %d
-%d
+%f
 
 Fatal error: Glib\Timer::continue(): Internal object missing in bad class, you must call parent::__construct in extended classes in %s on line %d

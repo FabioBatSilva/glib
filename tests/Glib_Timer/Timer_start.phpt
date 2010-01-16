@@ -25,7 +25,7 @@ echo $object->elapsed(), PHP_EOL;
 
 ?>
 --EXPECTF--
-%d
-%d
+%f
+%f
 
 Fatal error: Glib\Timer::start(): Internal object missing in bad class, you must call parent::__construct in extended classes in %s on line %d
