@@ -328,6 +328,30 @@ PHP_METHOD(Glib, shellUnquote)
 }
 /* }}} */
 
+/* {{{ proto string Glib::shellUnquote(string ununquoted_string)
+	   Locates the first executable named program in the user's path, in the same way that execvp() 
+	   would locate it. Returns an allocated string with the absolute path name, or NULL if the 
+	   program is not found in the path.
+*/
+PHP_METHOD(Glib, findProgram)
+{
+	char *string;
+	int length;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &string, &length) == FAILURE) {
+		return;
+	}
+
+	char *name = g_find_program_in_path(string);
+
+	if (NULL == name) {
+		RETURN_NULL();
+	}
+
+	RETURN_STRING(name, 1);
+}
+/* }}} */
+
 /* {{{ proto string Glib::userName()
 	   Gets the user name of the current user
 */
@@ -503,6 +527,7 @@ const zend_function_entry glib_methods[] = {
 	PHP_ME(Glib, getCharset,          NULL,                      ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	PHP_ME(Glib, shellQuote,          glib_string_args,          ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	PHP_ME(Glib, shellUnquote,        glib_string_args,          ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	PHP_ME(Glib, findProgram,         glib_string_args,          ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 
 	PHP_ME(Glib, userName,            NULL,                      ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	PHP_ME(Glib, userRealName,        NULL,                      ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
