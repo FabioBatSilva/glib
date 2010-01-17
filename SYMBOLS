@@ -315,3 +315,16 @@ gboolean            g_bookmark_file_move_item           (GBookmarkFile *bookmark
                                                          const gchar *new_uri,
                                                          GError **error);
 
+
+Miscellaneous Utility Functions
+
+g_get_user_name                     Glib::userName()
+g_get_real_name                     Glib::userRealName()
+g_get_user_cache_dir                Glib::userCacheDir()
+g_get_user_data_dir                 Glib::userDataDir()
+g_get_user_config_dir               Glib::userConfigDir()
+g_get_home_dir                      Glib::userHomeDir()
+g_get_user_special_dir              Glib::userSpecialDir()
+g_get_system_data_dirs              Glib::systemDataDirs()
+g_get_system_config_dirs            Glib::systemConfigDirs()
+g_find_program_in_path              Glib::findProgram()
