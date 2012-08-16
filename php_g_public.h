@@ -30,11 +30,17 @@
 #include <php.h>
 
 #ifdef PHP_WIN32
-# define PHP_G_API __declspec(dllexport)
+#  ifdef G_EXPORTS
+#    define PHP_G_API __declspec(dllexport)
+#  elif defined(COMPILE_DL_G)
+#    define PHP_G_API __declspec(dllimport)
+#  else
+#    define PHP_G_API /* nothing special */
+#  endif
 #elif defined(__GNUC__) && __GNUC__ >= 4
-# define PHP_G_API __attribute__ ((visibility("default")))
+#  define PHP_G_API __attribute__ ((visibility("default")))
 #else
-# define PHP_G_API
+#  define PHP_G_API
 #endif
 
 #define PHP_G_VERSION "0.1.0-dev"
