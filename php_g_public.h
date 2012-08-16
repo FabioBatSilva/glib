@@ -16,55 +16,37 @@
   +----------------------------------------------------------------------+
 */
 
-#include "php_g.h"
+#ifndef PHP_G_PUBLIC_H
+#define PHP_G_PUBLIC_H
 
-/* {{{ PHP_MINIT_FUNCTION
- */
-PHP_MINIT_FUNCTION(g)
-{
-	PHP_MINIT(Enum)(INIT_FUNC_ARGS_PASSTHRU);
-	PHP_MINIT(Struct)(INIT_FUNC_ARGS_PASSTHRU);
-	PHP_MINIT(Error)(INIT_FUNC_ARGS_PASSTHRU);
-	PHP_MINIT(String)(INIT_FUNC_ARGS_PASSTHRU);
-	PHP_MINIT(Unicode)(INIT_FUNC_ARGS_PASSTHRU);
-
-	return SUCCESS;
-}
-/* }}} */
-
-/* {{{ PHP_MINFO_FUNCTION
- */
-PHP_MINFO_FUNCTION(g)
-{
-	char output_buf[58];
-	snprintf(output_buf, sizeof(output_buf), "%d.%d.%d", glib_major_version, glib_minor_version, glib_micro_version);
-
-	php_info_print_table_start();
-	php_info_print_table_header(2, "G Support Objects", "enabled");
-	php_info_print_table_row(2, "Glib Library Version", output_buf);
-	php_info_print_table_row(2, "Extension Version", PHP_G_VERSION);
-	php_info_print_table_end();
-}
-/* }}} */
-
-/* {{{ g_module_entry */
-zend_module_entry g_module_entry = {
-	STANDARD_MODULE_HEADER,
-	"g",
-	NULL,
-	PHP_MINIT(g),
-	NULL,
-	NULL,
-	NULL,
-	PHP_MINFO(g),
-	PHP_G_VERSION,
-	STANDARD_MODULE_PROPERTIES
-};
-/* }}} */
-
-#ifdef COMPILE_DL_G
-ZEND_GET_MODULE(g)
+#ifdef HAVE_CONFIG_H
+# include "config.h"
 #endif
+
+#ifdef ZTS
+# include "TSRM.h"
+#endif
+
+#include <php.h>
+
+#ifdef PHP_WIN32
+# define PHP_G_API __declspec(dllexport)
+#elif defined(__GNUC__) && __GNUC__ >= 4
+# define PHP_G_API __attribute__ ((visibility("default")))
+#else
+# define PHP_G_API
+#endif
+
+#define PHP_G_VERSION "0.1.0-dev"
+#define G_NAMESPACE "G"
+
+PHP_G_API zend_class_entry *ce_g_enum;
+PHP_G_API zend_class_entry *ce_g_struct;
+PHP_G_API zend_class_entry *ce_g_error;
+PHP_G_API zend_class_entry *ce_g_string;
+PHP_G_API zend_class_entry *ce_g_unicode;
+
+#endif /* PHP_G_PUBLIC_H */
 
 /*
  * Local variables:

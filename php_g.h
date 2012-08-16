@@ -19,26 +19,32 @@
 #ifndef PHP_G_EXT_H
 #define PHP_G_EXT_H
 
-#define PHP_G_VERSION "0.1.0-dev"
-#define G_NAMESPACE "G"
+#include "php_g_public.h"
+
+#include <ext/standard/info.h>
+#include <zend_exceptions.h>
+#include <ext/spl/spl_exceptions.h>
+
+#include <glib.h>
+
+/* Class lifecycle */
+PHP_MINIT_FUNCTION(Enum);
+PHP_MINIT_FUNCTION(Struct);
+PHP_MINIT_FUNCTION(Error);
+PHP_MINIT_FUNCTION(String);
+PHP_MINIT_FUNCTION(Unicode);
+
+#define PHP_G_EXCEPTIONS \
+	zend_error_handling error_handling; \
+	zend_replace_error_handling(EH_THROW, spl_ce_InvalidArgumentException, &error_handling TSRMLS_CC);
+
+#define PHP_G_RESTORE_ERRORS \
+	zend_restore_error_handling(&error_handling TSRMLS_CC);
 
 extern zend_module_entry g_module_entry;
 #define phpext_g_ptr &g_module_entry
 
-#ifdef PHP_WIN32
-# define PHP_G_API __declspec(dllexport)
-#elif defined(__GNUC__) && __GNUC__ >= 4
-# define PHP_G_API __attribute__ ((visibility("default")))
-#else
-# define PHP_G_API
-#endif
-
-#ifdef ZTS
-# include "TSRM.h"
-#endif
-
 #endif /* PHP_G_EXT_H */
-
 
 /*
  * Local variables:

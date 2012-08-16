@@ -16,12 +16,7 @@
   +----------------------------------------------------------------------+
 */
 
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
-
-#include <php.h>
-#include "php_g_private.h"
+#include "php_g.h"
 
 zend_class_entry *ce_g_enum;
 
@@ -33,11 +28,14 @@ ZEND_BEGIN_ARG_INFO(Enum___construct_args, ZEND_SEND_BY_VAL)
 	ZEND_ARG_INFO(0, value)
 ZEND_END_ARG_INFO()
 
-
 ZEND_BEGIN_ARG_INFO_EX(Enum_getName_args, ZEND_SEND_BY_VAL, ZEND_RETURN_VALUE, 1)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO(Enum_getValue_args, ZEND_SEND_BY_VAL)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO(Enum_setValue_args, ZEND_SEND_BY_VAL)
+	ZEND_ARG_INFO(0, value)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO(Enum_getElements_args, ZEND_SEND_BY_VAL)
@@ -82,7 +80,7 @@ PHP_METHOD(Enum, getValue)
 /* }}} */
 
 /* {{{ proto mixed Enum->setValue(mixed newvalue)
-changes the enum to a new value*/
+                   changes the enum to a new value */
 PHP_METHOD(Enum, setValue)
 {
 	zval *member;

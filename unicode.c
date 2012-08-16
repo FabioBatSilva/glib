@@ -18,53 +18,32 @@
 
 #include "php_g.h"
 
-/* {{{ PHP_MINIT_FUNCTION
- */
-PHP_MINIT_FUNCTION(g)
+zend_class_entry *ce_g_unicode;
+
+/* ----------------------------------------------------------------
+    G\Unicode class API
+------------------------------------------------------------------*/
+
+/* ----------------------------------------------------------------
+    G\Unicode Definition and registration
+------------------------------------------------------------------*/
+
+/* {{{ class methods */
+static const zend_function_entry g_unicode_methods[] = {
+	ZEND_FE_END
+};
+/* }}} */
+
+/* {{{ PHP_MINIT_FUNCTION */
+PHP_MINIT_FUNCTION(Unicode)
 {
-	PHP_MINIT(Enum)(INIT_FUNC_ARGS_PASSTHRU);
-	PHP_MINIT(Struct)(INIT_FUNC_ARGS_PASSTHRU);
-	PHP_MINIT(Error)(INIT_FUNC_ARGS_PASSTHRU);
-	PHP_MINIT(String)(INIT_FUNC_ARGS_PASSTHRU);
-	PHP_MINIT(Unicode)(INIT_FUNC_ARGS_PASSTHRU);
+	zend_class_entry ce;
+	INIT_CLASS_ENTRY(ce, ZEND_NS_NAME(G_NAMESPACE, "Unicode"), g_unicode_methods);
+	ce_g_unicode = zend_register_internal_class(&ce TSRMLS_CC);
 
 	return SUCCESS;
 }
 /* }}} */
-
-/* {{{ PHP_MINFO_FUNCTION
- */
-PHP_MINFO_FUNCTION(g)
-{
-	char output_buf[58];
-	snprintf(output_buf, sizeof(output_buf), "%d.%d.%d", glib_major_version, glib_minor_version, glib_micro_version);
-
-	php_info_print_table_start();
-	php_info_print_table_header(2, "G Support Objects", "enabled");
-	php_info_print_table_row(2, "Glib Library Version", output_buf);
-	php_info_print_table_row(2, "Extension Version", PHP_G_VERSION);
-	php_info_print_table_end();
-}
-/* }}} */
-
-/* {{{ g_module_entry */
-zend_module_entry g_module_entry = {
-	STANDARD_MODULE_HEADER,
-	"g",
-	NULL,
-	PHP_MINIT(g),
-	NULL,
-	NULL,
-	NULL,
-	PHP_MINFO(g),
-	PHP_G_VERSION,
-	STANDARD_MODULE_PROPERTIES
-};
-/* }}} */
-
-#ifdef COMPILE_DL_G
-ZEND_GET_MODULE(g)
-#endif
 
 /*
  * Local variables:

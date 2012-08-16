@@ -8,5 +8,7 @@ if(!extension_loaded('g')) die('skip - G extension not available');
 <?php
 var_dump(phpversion('g'));
 ?>
+= DONE =
 --EXPECTF--
 string(%d) "%d.%d.%d%s"
+= DONE =

@@ -6,17 +6,14 @@ if(!extension_loaded('g')) die('skip - G extension not available');
 ?>
 --FILE--
 <?php
-ob_start();
-phpinfo(INFO_MODULES);
-$data = ob_get_clean();
-$data = explode("\n\n", $data);
-foreach($data as $key => $info) {
-	if ($info === 'g') {
-		break;
-	}
-}
-$data = $data[$key + 1];
-var_dump($data);
+$ext = new ReflectionExtension('g');
+$ext->info();
 ?>
+= DONE =
 --EXPECTF--
-string(30) "G Namespace support => enabled"
+g
+
+G Support Objects => enabled
+Glib Library Version => 2.%d.%d
+Extension Version => %d.%d.%d%s
+= DONE =

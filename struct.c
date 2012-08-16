@@ -16,31 +16,34 @@
   +----------------------------------------------------------------------+
 */
 
-#ifndef PHP_G_PRIVATE_EXT_H
-#define PHP_G_PRIVATE_EXT_H
-
 #include "php_g.h"
-#include <zend_exceptions.h>
-#include <ext/spl/spl_exceptions.h>
 
-/* Lifecycle - Extension */
-PHP_MINIT_FUNCTION(g);
-PHP_MINFO_FUNCTION(g);
+zend_class_entry *ce_g_struct;
 
-/* Class lifecycle */
-PHP_MINIT_FUNCTION(Enum);
+/* ----------------------------------------------------------------
+    G\Struct class API
+------------------------------------------------------------------*/
 
-#define PHP_G_EXCEPTIONS \
-	zend_error_handling error_handling; \
-	zend_replace_error_handling(EH_THROW, spl_ce_InvalidArgumentException, &error_handling TSRMLS_CC);
+/* ----------------------------------------------------------------
+    G\Struct Definition and registration
+------------------------------------------------------------------*/
 
-#define PHP_G_RESTORE_ERRORS \
-	zend_restore_error_handling(&error_handling TSRMLS_CC);
+/* {{{ class methods */
+static const zend_function_entry g_struct_methods[] = {
+	ZEND_FE_END
+};
+/* }}} */
 
-PHP_G_API zend_class_entry *ce_g_enum;
+/* {{{ PHP_MINIT_FUNCTION */
+PHP_MINIT_FUNCTION(Struct)
+{
+	zend_class_entry ce;
+	INIT_CLASS_ENTRY(ce, ZEND_NS_NAME(G_NAMESPACE, "Struct"), g_struct_methods);
+	ce_g_struct = zend_register_internal_class(&ce TSRMLS_CC);
 
-#endif /* PHP_G_PRIVATE_EXT_H */
-
+	return SUCCESS;
+}
+/* }}} */
 
 /*
  * Local variables:
