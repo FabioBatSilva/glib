@@ -48,9 +48,13 @@
 
 PHP_G_API zend_class_entry *ce_g_enum;
 PHP_G_API zend_class_entry *ce_g_struct;
-PHP_G_API zend_class_entry *ce_g_error;
+PHP_G_API zend_class_entry *ce_g_exception;
 PHP_G_API zend_class_entry *ce_g_string;
 PHP_G_API zend_class_entry *ce_g_unicode;
+
+typedef struct _GError GError;
+
+PHP_G_API zend_bool php_g_handle_gerror(GError **error TSRMLS_DC);
 
 #endif /* PHP_G_PUBLIC_H */
 

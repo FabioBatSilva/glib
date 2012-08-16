@@ -17,7 +17,7 @@ array(5) {
   [1]=>
   string(8) "G\Struct"
   [2]=>
-  string(7) "G\Error"
+  string(11) "G\Exception"
   [3]=>
   string(8) "G\String"
   [4]=>

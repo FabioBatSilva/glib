@@ -18,18 +18,67 @@
 
 #include "php_g.h"
 
-zend_class_entry *ce_g_error;
+zend_class_entry *ce_g_exception;
 
 /* ----------------------------------------------------------------
-    G\Error class API
+    G\Exception C API
 ------------------------------------------------------------------*/
 
+/* {{{ exported function to take a gerror, throw an exception, and clear the error */
+PHP_G_API zend_bool php_g_handle_gerror(GError **error TSRMLS_DC)
+{
+	zval *exception;
+
+	if (error == NULL || *error == NULL) {
+		return FALSE;
+	}
+
+	MAKE_STD_ZVAL(exception);
+	object_init_ex(exception, ce_g_exception);
+	if ((*error)->message) {
+		zend_update_property_string(ce_g_exception, exception, "message", sizeof("message")-1, (char *)(*error)->message TSRMLS_CC);
+	}
+	zend_update_property_string(ce_g_exception, exception, "domain", sizeof("domain")-1, (char *)g_quark_to_string((*error)->domain) TSRMLS_CC);
+	zend_update_property_long(ce_g_exception, exception, "code", sizeof("code")-1, (*error)->code TSRMLS_CC);
+
+	zend_throw_exception_object(exception TSRMLS_CC);
+
+	g_clear_error(error);
+
+	return TRUE;
+}
+/* }}} */
+
 /* ----------------------------------------------------------------
-    G\Error Definition and registration
+    G\Exception class API
+------------------------------------------------------------------*/
+
+/* {{{ proto string G\Exception->getDomain()
+                    returns the string domain of the gerror */
+PHP_METHOD(Exception, getDomain)
+{
+	zval *value;
+
+	PHP_G_EXCEPTIONS
+	if (FAILURE == zend_parse_parameters_none()) {
+		return;
+	}
+	PHP_G_RESTORE_ERRORS
+
+	value = zend_read_property(ce_g_exception, getThis(), "domain", sizeof("domain")-1, 0 TSRMLS_CC);
+	*return_value = *value;
+	zval_copy_ctor(return_value);
+	INIT_PZVAL(return_value);
+}
+/* }}} */
+
+/* ----------------------------------------------------------------
+    G\Exception Definition and registration
 ------------------------------------------------------------------*/
 
 /* {{{ class methods */
-static const zend_function_entry g_error_methods[] = {
+static const zend_function_entry g_exception_methods[] = {
+	ZEND_ME(Exception, getDomain, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_FINAL)
 	ZEND_FE_END
 };
 /* }}} */
@@ -38,8 +87,11 @@ static const zend_function_entry g_error_methods[] = {
 PHP_MINIT_FUNCTION(Error)
 {
 	zend_class_entry ce;
-	INIT_CLASS_ENTRY(ce, ZEND_NS_NAME(G_NAMESPACE, "Error"), g_error_methods);
-	ce_g_error = zend_register_internal_class(&ce TSRMLS_CC);
+
+	INIT_NS_CLASS_ENTRY(ce, G_NAMESPACE, "Exception", g_exception_methods);
+	ce_g_exception = zend_register_internal_class_ex(&ce, spl_ce_RuntimeException, NULL TSRMLS_CC);
+	ce_g_exception->ce_flags |= ZEND_ACC_FINAL;
+	zend_declare_property_string(ce_g_exception, "domain", sizeof("domain")-1, "", ZEND_ACC_PROTECTED TSRMLS_CC);
 
 	return SUCCESS;
 }

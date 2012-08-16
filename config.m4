@@ -21,7 +21,7 @@ if test "$PHP_G" != "no"; then
 
 	PHP_NEW_EXTENSION(g, g.c enum.c error.c struct.c string.c unicode.c, $ext_shared)
 
-	EXT_GI_HEADERS="php_g.h"
+	EXT_G_HEADERS="php_g_public.h"
 
 	ifdef([PHP_INSTALL_HEADERS], [
 		PHP_INSTALL_HEADERS(ext/g, $EXT_G_HEADERS)
