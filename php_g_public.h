@@ -46,11 +46,11 @@
 #define PHP_G_VERSION "0.1.0-dev"
 #define G_NAMESPACE "G"
 
-PHP_G_API zend_class_entry *ce_g_enum;
-PHP_G_API zend_class_entry *ce_g_struct;
-PHP_G_API zend_class_entry *ce_g_exception;
-PHP_G_API zend_class_entry *ce_g_string;
-PHP_G_API zend_class_entry *ce_g_unicode;
+extern zend_class_entry *ce_g_enum;
+extern zend_class_entry *ce_g_struct;
+extern zend_class_entry *ce_g_exception;
+extern zend_class_entry *ce_g_string;
+extern zend_class_entry *ce_g_unicode;
 
 /* enum struct object */
 typedef struct _g_enum_object g_enum_object;
@@ -59,6 +59,7 @@ typedef struct _g_enum_object g_enum_object;
 typedef struct _GError GError;
 
 PHP_G_API zend_bool php_g_handle_gerror(GError **error TSRMLS_DC);
+PHP_G_API long php_g_get_enum_value(zval** enumclass TSRMLS_DC);
 
 #endif /* PHP_G_PUBLIC_H */
 

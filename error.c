@@ -84,7 +84,7 @@ static const zend_function_entry g_exception_methods[] = {
 /* }}} */
 
 /* {{{ PHP_MINIT_FUNCTION */
-PHP_MINIT_FUNCTION(Error)
+PHP_MINIT_FUNCTION(g_Error)
 {
 	zend_class_entry ce;
 

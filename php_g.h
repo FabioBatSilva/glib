@@ -28,11 +28,11 @@
 #include <glib.h>
 
 /* Class lifecycle */
-PHP_MINIT_FUNCTION(Enum);
-PHP_MINIT_FUNCTION(Struct);
-PHP_MINIT_FUNCTION(Error);
-PHP_MINIT_FUNCTION(String);
-PHP_MINIT_FUNCTION(Unicode);
+PHP_MINIT_FUNCTION(g_Enum);
+PHP_MINIT_FUNCTION(g_Struct);
+PHP_MINIT_FUNCTION(g_Error);
+PHP_MINIT_FUNCTION(g_String);
+PHP_MINIT_FUNCTION(g_Unicode);
 
 #define PHP_G_EXCEPTIONS \
 	zend_error_handling error_handling; \

@@ -35,7 +35,7 @@ static const zend_function_entry g_unicode_methods[] = {
 /* }}} */
 
 /* {{{ PHP_MINIT_FUNCTION */
-PHP_MINIT_FUNCTION(Unicode)
+PHP_MINIT_FUNCTION(g_Unicode)
 {
 	zend_class_entry ce;
 	INIT_CLASS_ENTRY(ce, ZEND_NS_NAME(G_NAMESPACE, "Unicode"), g_unicode_methods);

@@ -35,7 +35,7 @@ static const zend_function_entry g_struct_methods[] = {
 /* }}} */
 
 /* {{{ PHP_MINIT_FUNCTION */
-PHP_MINIT_FUNCTION(Struct)
+PHP_MINIT_FUNCTION(g_Struct)
 {
 	zend_class_entry ce;
 	INIT_CLASS_ENTRY(ce, ZEND_NS_NAME(G_NAMESPACE, "Struct"), g_struct_methods);

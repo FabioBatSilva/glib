@@ -24,6 +24,20 @@ zend_object_handlers g_enum_handlers;
 static int g_enum_apply_set(long *option TSRMLS_DC, int num_args, va_list args, zend_hash_key *hash_key);
 
 /* ----------------------------------------------------------------
+    G\Enum C API
+------------------------------------------------------------------*/
+
+/* {{{ exported function to take a zval** enum instance and give you back the long value */
+PHP_G_API long php_g_get_enum_value(zval** enumclass TSRMLS_DC)
+{
+	g_enum_object *enum_object;
+
+	enum_object = (g_enum_object *) zend_object_store_get_object(*enumclass TSRMLS_CC);
+	return enum_object->value;
+}
+/* }}} */
+
+/* ----------------------------------------------------------------
     G\Enum class API
 ------------------------------------------------------------------*/
 
@@ -359,14 +373,17 @@ static HashTable* g_enum_debug_info(zval *obj, int *is_temp TSRMLS_DC)
     G\Enum Definition and registration
 ------------------------------------------------------------------*/
 
+/* {{{ class methods */
 static const zend_function_entry g_enum_methods[] = {
 	PHP_ME(Enum, __construct, Enum___construct_args, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
 	PHP_ME(Enum, getName, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME(Enum, getElements, NULL, ZEND_ACC_PUBLIC)
 	ZEND_FE_END
 };
+/* }}} */
 
-PHP_MINIT_FUNCTION(Enum)
+/* {{{ PHP_MINIT_FUNCTION */
+PHP_MINIT_FUNCTION(g_Enum)
 {
 	zend_class_entry ce;
 	INIT_NS_CLASS_ENTRY(ce, G_NAMESPACE, "Enum", g_enum_methods);
@@ -384,7 +401,7 @@ PHP_MINIT_FUNCTION(Enum)
 
 	return SUCCESS;
 }
-
+/* }}} */
 
 /*
  * Local variables:

@@ -35,7 +35,7 @@ static const zend_function_entry g_string_methods[] = {
 /* }}} */
 
 /* {{{ PHP_MINIT_FUNCTION */
-PHP_MINIT_FUNCTION(String)
+PHP_MINIT_FUNCTION(g_String)
 {
 	zend_class_entry ce;
 	INIT_CLASS_ENTRY(ce, ZEND_NS_NAME(G_NAMESPACE, "String"), g_string_methods);
