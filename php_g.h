@@ -41,6 +41,14 @@ PHP_MINIT_FUNCTION(Unicode);
 #define PHP_G_RESTORE_ERRORS \
 	zend_restore_error_handling(&error_handling TSRMLS_CC);
 
+/* enum object */
+struct _g_enum_object {
+	zend_object std;
+	zend_bool   is_constructed;
+	long        value;
+	HashTable  *elements;
+};
+
 extern zend_module_entry g_module_entry;
 #define phpext_g_ptr &g_module_entry
 

@@ -52,6 +52,10 @@ PHP_G_API zend_class_entry *ce_g_exception;
 PHP_G_API zend_class_entry *ce_g_string;
 PHP_G_API zend_class_entry *ce_g_unicode;
 
+/* enum struct object */
+typedef struct _g_enum_object g_enum_object;
+
+/* so we don't have to include glib.h for one define */
 typedef struct _GError GError;
 
 PHP_G_API zend_bool php_g_handle_gerror(GError **error TSRMLS_DC);

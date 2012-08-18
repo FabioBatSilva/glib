@@ -19,22 +19,15 @@ $lunch1 = new Fruit('Apple');
 $lunch2 = new Fruit(Fruit::Orange);
 
 $dinner1 = new Exotic('Mango');
-$dinner2 = new Exotic(Fruit::Papaya);
+$dinner2 = new Exotic(Exotic::Papaya);
 
-echo $lunch1;
-echo $lunch2->getValue();
-echo $lunch2->getName();
+echo $lunch1, PHP_EOL;
+echo $lunch2->getName(), PHP_EOL;
 
-echo $dinner1;
-echo $dinner2->getValue();
-echo $dinner2->getName();
+echo $dinner1, PHP_EOL;
+echo $dinner2->getName(), PHP_EOL;
 
-$values = Fruit::getElements();
-foreach($values as $key => $value) {
-     echo "My fruit $key is $value", PHP_EOL;
-}
+var_dump($lunch1->getElements());
 
-$values = Exotic::getElements();
-foreach($values as $key => $value) {
-     echo "My exotic fruit $key is $value", PHP_EOL;
-}
+var_dump($lunch1);
+var_dump($dinner2);
