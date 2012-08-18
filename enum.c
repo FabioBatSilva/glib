@@ -37,6 +37,17 @@ PHP_G_API long php_g_get_enum_value(zval** enumclass TSRMLS_DC)
 }
 /* }}} */
 
+/* {{{ exported function to take long and stick it in an enum class
+        WARNING: This does NOT check values, so make sure you don't screw up */
+PHP_G_API void php_g_set_enum_value(zval** enumclass, long value TSRMLS_DC)
+{
+	g_enum_object *enum_object;
+
+	enum_object = (g_enum_object *) zend_object_store_get_object(*enumclass TSRMLS_CC);
+	enum_object->value = value;
+}
+/* }}} */
+
 /* ----------------------------------------------------------------
     G\Enum class API
 ------------------------------------------------------------------*/

@@ -60,6 +60,7 @@ typedef struct _GError GError;
 
 PHP_G_API zend_bool php_g_handle_gerror(GError **error TSRMLS_DC);
 PHP_G_API long php_g_get_enum_value(zval** enumclass TSRMLS_DC);
+PHP_G_API void php_g_set_enum_value(zval** enumclass, long value TSRMLS_DC);
 
 #endif /* PHP_G_PUBLIC_H */
 
