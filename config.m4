@@ -21,7 +21,7 @@ if test "$PHP_GLIB" != "no"; then
 
 	PHP_NEW_EXTENSION(glib, php_glib.c enum.c error.c struct.c string.c unicode.c, $ext_shared)
 
-	EXT_G_HEADERS="php_glib_public.h"
+	EXT_GLIB_HEADERS="php_glib_public.h"
 
 	ifdef([PHP_INSTALL_HEADERS], [
 		PHP_INSTALL_HEADERS(ext/glib, $EXT_GLIB_HEADERS)
