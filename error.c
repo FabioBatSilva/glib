@@ -16,16 +16,16 @@
   +----------------------------------------------------------------------+
 */
 
-#include "php_g.h"
+#include "php_glib.h"
 
-zend_class_entry *ce_g_exception;
+zend_class_entry *ce_glib_exception;
 
 /* ----------------------------------------------------------------
     G\Exception C API
 ------------------------------------------------------------------*/
 
 /* {{{ exported function to take a gerror, throw an exception, and clear the error */
-PHP_G_API zend_bool php_g_handle_gerror(GError **error TSRMLS_DC)
+PHP_GLIB_API zend_bool php_g_handle_gerror(GError **error TSRMLS_DC)
 {
 	zval *exception;
 
@@ -34,12 +34,12 @@ PHP_G_API zend_bool php_g_handle_gerror(GError **error TSRMLS_DC)
 	}
 
 	MAKE_STD_ZVAL(exception);
-	object_init_ex(exception, ce_g_exception);
+	object_init_ex(exception, ce_glib_exception);
 	if ((*error)->message) {
-		zend_update_property_string(ce_g_exception, exception, "message", sizeof("message")-1, (char *)(*error)->message TSRMLS_CC);
+		zend_update_property_string(ce_glib_exception, exception, "message", sizeof("message")-1, (char *)(*error)->message TSRMLS_CC);
 	}
-	zend_update_property_string(ce_g_exception, exception, "domain", sizeof("domain")-1, (char *)g_quark_to_string((*error)->domain) TSRMLS_CC);
-	zend_update_property_long(ce_g_exception, exception, "code", sizeof("code")-1, (*error)->code TSRMLS_CC);
+	zend_update_property_string(ce_glib_exception, exception, "domain", sizeof("domain")-1, (char *)g_quark_to_string((*error)->domain) TSRMLS_CC);
+	zend_update_property_long(ce_glib_exception, exception, "code", sizeof("code")-1, (*error)->code TSRMLS_CC);
 
 	zend_throw_exception_object(exception TSRMLS_CC);
 
@@ -59,13 +59,13 @@ PHP_METHOD(Exception, getDomain)
 {
 	zval *value;
 
-	PHP_G_EXCEPTIONS
+	PHP_GLIB_EXCEPTIONS
 	if (FAILURE == zend_parse_parameters_none()) {
 		return;
 	}
-	PHP_G_RESTORE_ERRORS
+	PHP_GLIB_RESTORE_ERRORS
 
-	value = zend_read_property(ce_g_exception, getThis(), "domain", sizeof("domain")-1, 0 TSRMLS_CC);
+	value = zend_read_property(ce_glib_exception, getThis(), "domain", sizeof("domain")-1, 0 TSRMLS_CC);
 	*return_value = *value;
 	zval_copy_ctor(return_value);
 	INIT_PZVAL(return_value);
@@ -77,21 +77,21 @@ PHP_METHOD(Exception, getDomain)
 ------------------------------------------------------------------*/
 
 /* {{{ class methods */
-static const zend_function_entry g_exception_methods[] = {
+static const zend_function_entry glib_exception_methods[] = {
 	ZEND_ME(Exception, getDomain, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_FINAL)
 	ZEND_FE_END
 };
 /* }}} */
 
 /* {{{ PHP_MINIT_FUNCTION */
-PHP_MINIT_FUNCTION(g_Error)
+PHP_MINIT_FUNCTION(glib_Error)
 {
 	zend_class_entry ce;
 
-	INIT_NS_CLASS_ENTRY(ce, G_NAMESPACE, "Exception", g_exception_methods);
-	ce_g_exception = zend_register_internal_class_ex(&ce, spl_ce_RuntimeException, NULL TSRMLS_CC);
-	ce_g_exception->ce_flags |= ZEND_ACC_FINAL;
-	zend_declare_property_string(ce_g_exception, "domain", sizeof("domain")-1, "", ZEND_ACC_PROTECTED TSRMLS_CC);
+	INIT_NS_CLASS_ENTRY(ce, GLIB_NAMESPACE, "Exception", glib_exception_methods);
+	ce_glib_exception = zend_register_internal_class_ex(&ce, spl_ce_RuntimeException, NULL TSRMLS_CC);
+	ce_glib_exception->ce_flags |= ZEND_ACC_FINAL;
+	zend_declare_property_string(ce_glib_exception, "domain", sizeof("domain")-1, "", ZEND_ACC_PROTECTED TSRMLS_CC);
 
 	return SUCCESS;
 }

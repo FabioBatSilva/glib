@@ -16,9 +16,9 @@
   +----------------------------------------------------------------------+
 */
 
-#include "php_g.h"
+#include "php_glib.h"
 
-zend_class_entry *ce_g_unicode;
+zend_class_entry *ce_glib_unicode;
 
 /* ----------------------------------------------------------------
     G\Unicode class API
@@ -29,17 +29,17 @@ zend_class_entry *ce_g_unicode;
 ------------------------------------------------------------------*/
 
 /* {{{ class methods */
-static const zend_function_entry g_unicode_methods[] = {
+static const zend_function_entry glib_unicode_methods[] = {
 	ZEND_FE_END
 };
 /* }}} */
 
 /* {{{ PHP_MINIT_FUNCTION */
-PHP_MINIT_FUNCTION(g_Unicode)
+PHP_MINIT_FUNCTION(glib_Unicode)
 {
 	zend_class_entry ce;
-	INIT_CLASS_ENTRY(ce, ZEND_NS_NAME(G_NAMESPACE, "Unicode"), g_unicode_methods);
-	ce_g_unicode = zend_register_internal_class(&ce TSRMLS_CC);
+	INIT_CLASS_ENTRY(ce, ZEND_NS_NAME(GLIB_NAMESPACE, "Unicode"), glib_unicode_methods);
+	ce_glib_unicode = zend_register_internal_class(&ce TSRMLS_CC);
 
 	return SUCCESS;
 }

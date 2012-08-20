@@ -16,17 +16,17 @@
   +----------------------------------------------------------------------+
 */
 
-#include "php_g.h"
+#include "php_glib.h"
 
 /* {{{ PHP_MINIT_FUNCTION
  */
-PHP_MINIT_FUNCTION(g)
+PHP_MINIT_FUNCTION(glib)
 {
-	PHP_MINIT(g_Enum)(INIT_FUNC_ARGS_PASSTHRU);
-	PHP_MINIT(g_Struct)(INIT_FUNC_ARGS_PASSTHRU);
-	PHP_MINIT(g_Error)(INIT_FUNC_ARGS_PASSTHRU);
-	PHP_MINIT(g_String)(INIT_FUNC_ARGS_PASSTHRU);
-	PHP_MINIT(g_Unicode)(INIT_FUNC_ARGS_PASSTHRU);
+	PHP_MINIT(glib_Enum)(INIT_FUNC_ARGS_PASSTHRU);
+	PHP_MINIT(glib_Struct)(INIT_FUNC_ARGS_PASSTHRU);
+	PHP_MINIT(glib_Error)(INIT_FUNC_ARGS_PASSTHRU);
+	PHP_MINIT(glib_String)(INIT_FUNC_ARGS_PASSTHRU);
+	PHP_MINIT(glib_Unicode)(INIT_FUNC_ARGS_PASSTHRU);
 
 	return SUCCESS;
 }
@@ -34,36 +34,36 @@ PHP_MINIT_FUNCTION(g)
 
 /* {{{ PHP_MINFO_FUNCTION
  */
-PHP_MINFO_FUNCTION(g)
+PHP_MINFO_FUNCTION(glib)
 {
 	char output_buf[58];
 	snprintf(output_buf, sizeof(output_buf), "%d.%d.%d", glib_major_version, glib_minor_version, glib_micro_version);
 
 	php_info_print_table_start();
-	php_info_print_table_header(2, "G Support Objects", "enabled");
+	php_info_print_table_header(2, "GLib extension (G namespace)", "enabled");
 	php_info_print_table_row(2, "Glib Library Version", output_buf);
-	php_info_print_table_row(2, "Extension Version", PHP_G_VERSION);
+	php_info_print_table_row(2, "Extension Version", PHP_GLIB_VERSION);
 	php_info_print_table_end();
 }
 /* }}} */
 
-/* {{{ g_module_entry */
-zend_module_entry g_module_entry = {
+/* {{{ glib_module_entry */
+zend_module_entry glib_module_entry = {
 	STANDARD_MODULE_HEADER,
-	"g",
+	"glib",
 	NULL,
-	PHP_MINIT(g),
+	PHP_MINIT(glib),
 	NULL,
 	NULL,
 	NULL,
-	PHP_MINFO(g),
-	PHP_G_VERSION,
+	PHP_MINFO(glib),
+	PHP_GLIB_VERSION,
 	STANDARD_MODULE_PROPERTIES
 };
 /* }}} */
 
-#ifdef COMPILE_DL_G
-ZEND_GET_MODULE(g)
+#ifdef COMPILE_DL_GLIB
+ZEND_GET_MODULE(glib)
 #endif
 
 /*

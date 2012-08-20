@@ -16,9 +16,9 @@
   +----------------------------------------------------------------------+
 */
 
-#include "php_g.h"
+#include "php_glib.h"
 
-zend_class_entry *ce_g_struct;
+zend_class_entry *ce_glib_struct;
 
 /* ----------------------------------------------------------------
     G\Struct class API
@@ -29,17 +29,17 @@ zend_class_entry *ce_g_struct;
 ------------------------------------------------------------------*/
 
 /* {{{ class methods */
-static const zend_function_entry g_struct_methods[] = {
+static const zend_function_entry glib_struct_methods[] = {
 	ZEND_FE_END
 };
 /* }}} */
 
 /* {{{ PHP_MINIT_FUNCTION */
-PHP_MINIT_FUNCTION(g_Struct)
+PHP_MINIT_FUNCTION(glib_Struct)
 {
 	zend_class_entry ce;
-	INIT_CLASS_ENTRY(ce, ZEND_NS_NAME(G_NAMESPACE, "Struct"), g_struct_methods);
-	ce_g_struct = zend_register_internal_class(&ce TSRMLS_CC);
+	INIT_CLASS_ENTRY(ce, ZEND_NS_NAME(GLIB_NAMESPACE, "Struct"), glib_struct_methods);
+	ce_glib_struct = zend_register_internal_class(&ce TSRMLS_CC);
 
 	return SUCCESS;
 }

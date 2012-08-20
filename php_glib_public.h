@@ -16,43 +16,50 @@
   +----------------------------------------------------------------------+
 */
 
-#ifndef PHP_G_EXT_H
-#define PHP_G_EXT_H
+#ifndef PHP_GLIB_PUBLIC_H
+#define PHP_GLIB_PUBLIC_H
 
-#include "php_g_public.h"
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
-#include <ext/standard/info.h>
-#include <zend_exceptions.h>
-#include <ext/spl/spl_exceptions.h>
+#ifdef ZTS
+# include "TSRM.h"
+#endif
 
-#include <glib.h>
+#include <php.h>
 
-/* Class lifecycle */
-PHP_MINIT_FUNCTION(g_Enum);
-PHP_MINIT_FUNCTION(g_Struct);
-PHP_MINIT_FUNCTION(g_Error);
-PHP_MINIT_FUNCTION(g_String);
-PHP_MINIT_FUNCTION(g_Unicode);
+#ifdef PHP_WIN32
+#  ifdef G_EXPORTS
+#    define PHP_GLIB_API __declspec(dllexport)
+#  elif defined(COMPILE_DL_GLIB)
+#    define PHP_GLIB_API __declspec(dllimport)
+#  else
+#    define PHP_GLIB_API /* nothing special */
+#  endif
+#elif defined(__GNUC__) && __GNUC__ >= 4
+#  define PHP_GLIB_API __attribute__ ((visibility("default")))
+#else
+#  define PHP_GLIB_API
+#endif
 
-#define PHP_G_EXCEPTIONS \
-	zend_error_handling error_handling; \
-	zend_replace_error_handling(EH_THROW, spl_ce_InvalidArgumentException, &error_handling TSRMLS_CC);
+#define PHP_GLIB_VERSION "0.1.0-dev"
+#define GLIB_NAMESPACE "G"
 
-#define PHP_G_RESTORE_ERRORS \
-	zend_restore_error_handling(&error_handling TSRMLS_CC);
+extern PHP_GLIB_API zend_class_entry *ce_glib_enum;
+extern PHP_GLIB_API zend_class_entry *ce_glib_struct;
+extern PHP_GLIB_API zend_class_entry *ce_glib_exception;
+extern PHP_GLIB_API zend_class_entry *ce_glib_string;
+extern PHP_GLIB_API zend_class_entry *ce_glib_unicode;
 
-/* enum object */
-struct _g_enum_object {
-	zend_object std;
-	zend_bool   is_constructed;
-	long        value;
-	HashTable  *elements;
-};
+/* so we don't have to include glib.h for one define */
+typedef struct _GError GError;
 
-extern zend_module_entry g_module_entry;
-#define phpext_g_ptr &g_module_entry
+extern PHP_GLIB_API zend_bool php_g_handle_gerror(GError **error TSRMLS_DC);
+extern PHP_GLIB_API long php_g_get_enum_value(zval** enumclass TSRMLS_DC);
+extern PHP_GLIB_API void php_g_set_enum_value(zval** enumclass, long value TSRMLS_DC);
 
-#endif /* PHP_G_EXT_H */
+#endif /* PHP_GLIB_PUBLIC_H */
 
 /*
  * Local variables:

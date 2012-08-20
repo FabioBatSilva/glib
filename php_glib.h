@@ -16,53 +16,38 @@
   +----------------------------------------------------------------------+
 */
 
-#ifndef PHP_G_PUBLIC_H
-#define PHP_G_PUBLIC_H
+#ifndef PHP_GLIB_EXT_H
+#define PHP_GLIB_EXT_H
 
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
+#include "php_glib_public.h"
 
-#ifdef ZTS
-# include "TSRM.h"
-#endif
+#include <ext/standard/info.h>
+#include <zend_exceptions.h>
+#include <ext/spl/spl_exceptions.h>
 
-#include <php.h>
+#include <glib.h>
 
-#ifdef PHP_WIN32
-#  ifdef G_EXPORTS
-#    define PHP_G_API __declspec(dllexport)
-#  elif defined(COMPILE_DL_G)
-#    define PHP_G_API __declspec(dllimport)
-#  else
-#    define PHP_G_API /* nothing special */
-#  endif
-#elif defined(__GNUC__) && __GNUC__ >= 4
-#  define PHP_G_API __attribute__ ((visibility("default")))
-#else
-#  define PHP_G_API
-#endif
-
-#define PHP_G_VERSION "0.1.0-dev"
-#define G_NAMESPACE "G"
-
-extern zend_class_entry *ce_g_enum;
-extern zend_class_entry *ce_g_struct;
-extern zend_class_entry *ce_g_exception;
-extern zend_class_entry *ce_g_string;
-extern zend_class_entry *ce_g_unicode;
+/* Class lifecycle */
+PHP_MINIT_FUNCTION(glib_Enum);
+PHP_MINIT_FUNCTION(glib_Struct);
+PHP_MINIT_FUNCTION(glib_Error);
+PHP_MINIT_FUNCTION(glib_String);
+PHP_MINIT_FUNCTION(glib_Unicode);
 
 /* enum struct object */
-typedef struct _g_enum_object g_enum_object;
+typedef struct _glib_enum_object glib_enum_object;
 
-/* so we don't have to include glib.h for one define */
-typedef struct _GError GError;
+#define PHP_GLIB_EXCEPTIONS \
+	zend_error_handling error_handling; \
+	zend_replace_error_handling(EH_THROW, spl_ce_InvalidArgumentException, &error_handling TSRMLS_CC);
 
-PHP_G_API zend_bool php_g_handle_gerror(GError **error TSRMLS_DC);
-PHP_G_API long php_g_get_enum_value(zval** enumclass TSRMLS_DC);
-PHP_G_API void php_g_set_enum_value(zval** enumclass, long value TSRMLS_DC);
+#define PHP_GLIB_RESTORE_ERRORS \
+	zend_restore_error_handling(&error_handling TSRMLS_CC);
 
-#endif /* PHP_G_PUBLIC_H */
+extern zend_module_entry glib_module_entry;
+#define phpext_glib_ptr &glib_module_entry
+
+#endif /* PHP_GLIB_EXT_H */
 
 /*
  * Local variables:

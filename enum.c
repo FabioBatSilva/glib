@@ -16,34 +16,42 @@
   +----------------------------------------------------------------------+
 */
 
-#include "php_g.h"
+#include "php_glib.h"
 
-zend_class_entry *ce_g_enum;
-zend_object_handlers g_enum_handlers;
+zend_class_entry *ce_glib_enum;
+zend_object_handlers glib_enum_handlers;
 
-static int g_enum_apply_set(long *option TSRMLS_DC, int num_args, va_list args, zend_hash_key *hash_key);
+static int glib_enum_apply_set(long *option TSRMLS_DC, int num_args, va_list args, zend_hash_key *hash_key);
+
+/* enum object */
+struct _glib_enum_object {
+	zend_object std;
+	zend_bool   is_constructed;
+	long        value;
+	HashTable  *elements;
+};
 
 /* ----------------------------------------------------------------
     G\Enum C API
 ------------------------------------------------------------------*/
 
 /* {{{ exported function to take a zval** enum instance and give you back the long value */
-PHP_G_API long php_g_get_enum_value(zval** enumclass TSRMLS_DC)
+PHP_GLIB_API long php_glib_get_enum_value(zval** enumclass TSRMLS_DC)
 {
-	g_enum_object *enum_object;
+	glib_enum_object *enum_object;
 
-	enum_object = (g_enum_object *) zend_object_store_get_object(*enumclass TSRMLS_CC);
+	enum_object = (glib_enum_object *) zend_object_store_get_object(*enumclass TSRMLS_CC);
 	return enum_object->value;
 }
 /* }}} */
 
 /* {{{ exported function to take long and stick it in an enum class
         WARNING: This does NOT check values, so make sure you don't screw up */
-PHP_G_API void php_g_set_enum_value(zval** enumclass, long value TSRMLS_DC)
+PHP_GLIB_API void php_glib_set_enum_value(zval** enumclass, long value TSRMLS_DC)
 {
-	g_enum_object *enum_object;
+	glib_enum_object *enum_object;
 
-	enum_object = (g_enum_object *) zend_object_store_get_object(*enumclass TSRMLS_CC);
+	enum_object = (glib_enum_object *) zend_object_store_get_object(*enumclass TSRMLS_CC);
 	enum_object->value = value;
 }
 /* }}} */
@@ -61,7 +69,7 @@ ZEND_END_ARG_INFO()
                   anything else is cast and we attempt to assign */
 PHP_METHOD(Enum, __construct)
 {
-	g_enum_object *enum_object;
+	glib_enum_object *enum_object;
 	long *new_val;
 	zend_bool found = FALSE;
 
@@ -71,15 +79,15 @@ PHP_METHOD(Enum, __construct)
 
 	/* Valid - send a valid long, send a string of a set item, send any other item and it will
 	 * be cast to a long and see if it's set */
-	PHP_G_EXCEPTIONS
+	PHP_GLIB_EXCEPTIONS
 	if (FAILURE == zend_parse_parameters_ex(ZEND_PARSE_PARAMS_QUIET, ZEND_NUM_ARGS() TSRMLS_CC,"l", &value)) {
 		if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "z", &cast)) {
 			return;
 		}
 	}
-	PHP_G_RESTORE_ERRORS
+	PHP_GLIB_RESTORE_ERRORS
 
-	enum_object = (g_enum_object *) zend_object_store_get_object(getThis() TSRMLS_CC);
+	enum_object = (glib_enum_object *) zend_object_store_get_object(getThis() TSRMLS_CC);
 
 	/* handle cast zval */
 	if(NULL != cast) {
@@ -93,7 +101,7 @@ PHP_METHOD(Enum, __construct)
 	}
 
 	/* handle the "easy" case of a long */
-	zend_hash_apply_with_arguments(enum_object->elements TSRMLS_CC, (apply_func_args_t)g_enum_apply_set, 2, &value, &found TSRMLS_CC);
+	zend_hash_apply_with_arguments(enum_object->elements TSRMLS_CC, (apply_func_args_t)glib_enum_apply_set, 2, &value, &found TSRMLS_CC);
 
 	if(found) {
 		enum_object->value = value;
@@ -108,18 +116,18 @@ PHP_METHOD(Enum, __construct)
 get member name of current enum value */
 PHP_METHOD(Enum, getName)
 {
-	g_enum_object *enum_object;
+	glib_enum_object *enum_object;
 	char *key;
 	ulong pos;
 	long *value;
 
-	PHP_G_EXCEPTIONS
+	PHP_GLIB_EXCEPTIONS
 	if (FAILURE == zend_parse_parameters_none()) {
 		return;
 	}
-	PHP_G_RESTORE_ERRORS
+	PHP_GLIB_RESTORE_ERRORS
 
-	enum_object = (g_enum_object *) zend_object_store_get_object(getThis() TSRMLS_CC);
+	enum_object = (glib_enum_object *) zend_object_store_get_object(getThis() TSRMLS_CC);
 
 	zend_hash_internal_pointer_reset(enum_object->elements);
 
@@ -134,9 +142,9 @@ PHP_METHOD(Enum, getName)
 }
 /* }}} */
 
-/* {{{ g_enum_collect_elements
+/* {{{ glib_enum_collect_elements
        helper function for getElements call to collect all values */
-static int g_enum_collect_elements(long *value TSRMLS_DC, int num_args, va_list args, zend_hash_key *hash_key) /* {{{ */
+static int glib_enum_collect_elements(long *value TSRMLS_DC, int num_args, va_list args, zend_hash_key *hash_key) /* {{{ */
 {
 	zval *return_value = va_arg(args, zval*);
 
@@ -150,18 +158,18 @@ static int g_enum_collect_elements(long *value TSRMLS_DC, int num_args, va_list 
                    get array of available name => value pairs */
 PHP_METHOD(Enum, getElements)
 {
-	g_enum_object *enum_object;
+	glib_enum_object *enum_object;
 
-	PHP_G_EXCEPTIONS
+	PHP_GLIB_EXCEPTIONS
 	if (FAILURE == zend_parse_parameters_none()) {
 		return;
 	}
-	PHP_G_RESTORE_ERRORS
+	PHP_GLIB_RESTORE_ERRORS
 
-	enum_object = (g_enum_object *) zend_object_store_get_object(getThis() TSRMLS_CC);
+	enum_object = (glib_enum_object *) zend_object_store_get_object(getThis() TSRMLS_CC);
 
 	array_init(return_value);
-	zend_hash_apply_with_arguments(enum_object->elements TSRMLS_CC, (apply_func_args_t)g_enum_collect_elements, 1, return_value);
+	zend_hash_apply_with_arguments(enum_object->elements TSRMLS_CC, (apply_func_args_t)glib_enum_collect_elements, 1, return_value);
 }
 /* }}} */
 
@@ -169,8 +177,8 @@ PHP_METHOD(Enum, getElements)
     G\Enum Object management
 ------------------------------------------------------------------*/
 
-/* {{{ g_enum_collect_constants */
-static int g_enum_collect_constants(zval **pzconst TSRMLS_DC, int num_args, va_list args, zend_hash_key *hash_key)
+/* {{{ glib_enum_collect_constants */
+static int glib_enum_collect_constants(zval **pzconst TSRMLS_DC, int num_args, va_list args, zend_hash_key *hash_key)
 {
 	HashTable *elements = va_arg(args, HashTable*);
 	char *classname = va_arg(args, char*);
@@ -185,10 +193,10 @@ static int g_enum_collect_constants(zval **pzconst TSRMLS_DC, int num_args, va_l
 }
 /* }}} */
 
-/* {{{ g_enum_object_free */
-static void g_enum_object_free(void *object TSRMLS_DC)
+/* {{{ glib_enum_object_free */
+static void glib_enum_object_free(void *object TSRMLS_DC)
 {
-	g_enum_object *enum_object = (g_enum_object *)object;
+	glib_enum_object *enum_object = (glib_enum_object *)object;
 
 	zend_object_std_dtor(&enum_object->std TSRMLS_CC);
 	enum_object->is_constructed = FALSE;
@@ -200,13 +208,13 @@ static void g_enum_object_free(void *object TSRMLS_DC)
 }
 /* }}} */
 
-/* {{{ g_enum_object_create */
-static zend_object_value g_enum_object_create(zend_class_entry *ce TSRMLS_DC)
+/* {{{ glib_enum_object_create */
+static zend_object_value glib_enum_object_create(zend_class_entry *ce TSRMLS_DC)
 {
 	zend_object_value retval;
-	g_enum_object *enum_object;
+	glib_enum_object *enum_object;
 
-	enum_object = ecalloc(1, sizeof(g_enum_object));
+	enum_object = ecalloc(1, sizeof(glib_enum_object));
 	zend_object_std_init((zend_object *) enum_object, ce TSRMLS_CC);
 	enum_object->is_constructed = FALSE;
 	enum_object->value = 0;
@@ -217,22 +225,22 @@ static zend_object_value g_enum_object_create(zend_class_entry *ce TSRMLS_DC)
 
 	zend_update_class_constants(ce TSRMLS_CC);
 
-	zend_hash_apply_with_arguments(&ce->constants_table TSRMLS_CC, (apply_func_args_t)g_enum_collect_constants, 2, enum_object->elements, enum_object->std.ce->name);
+	zend_hash_apply_with_arguments(&ce->constants_table TSRMLS_CC, (apply_func_args_t)glib_enum_collect_constants, 2, enum_object->elements, enum_object->std.ce->name);
 
 	retval.handle = zend_objects_store_put(enum_object,
 		(zend_objects_store_dtor_t) zend_objects_destroy_object,
-		(zend_objects_free_object_storage_t) g_enum_object_free,
+		(zend_objects_free_object_storage_t) glib_enum_object_free,
 		NULL TSRMLS_CC);
 
-	retval.handlers = &g_enum_handlers;
+	retval.handlers = &glib_enum_handlers;
 	return retval;
 }
 /* }}} */
 
-/* {{{ g_enum_get */
-static zval* g_enum_get(zval *zobject TSRMLS_DC)
+/* {{{ glib_enum_get */
+static zval* glib_enum_get(zval *zobject TSRMLS_DC)
 {
-	g_enum_object *enum_object = (g_enum_object *) zend_object_store_get_object(zobject TSRMLS_CC);
+	glib_enum_object *enum_object = (glib_enum_object *) zend_object_store_get_object(zobject TSRMLS_CC);
 	zval *value;
 
 	MAKE_STD_ZVAL(value);
@@ -242,8 +250,8 @@ static zval* g_enum_get(zval *zobject TSRMLS_DC)
 	return value;
 } /* }}} */
 
-/* {{{ g_enum_apply_set */
-static int g_enum_apply_set(long *option TSRMLS_DC, int num_args, va_list args, zend_hash_key *hash_key) 
+/* {{{ glib_enum_apply_set */
+static int glib_enum_apply_set(long *option TSRMLS_DC, int num_args, va_list args, zend_hash_key *hash_key) 
 {
 	long *value = va_arg(args, long*);
 	zend_bool *found = va_arg(args, zend_bool*);
@@ -257,10 +265,10 @@ static int g_enum_apply_set(long *option TSRMLS_DC, int num_args, va_list args, 
 }
 /* }}} */
 
-/* {{{ g_enum_set */
-static void g_enum_set(zval **zobject, zval *value TSRMLS_DC)
+/* {{{ glib_enum_set */
+static void glib_enum_set(zval **zobject, zval *value TSRMLS_DC)
 {
-	g_enum_object *enum_object = (g_enum_object *) zend_object_store_get_object(*zobject TSRMLS_CC);
+	glib_enum_object *enum_object = (glib_enum_object *) zend_object_store_get_object(*zobject TSRMLS_CC);
 	zend_bool found = FALSE;
 	long lvalue;
 	zval *juggled;
@@ -292,7 +300,7 @@ static void g_enum_set(zval **zobject, zval *value TSRMLS_DC)
 	}
 	lvalue = Z_LVAL_P(juggled);
 
-	zend_hash_apply_with_arguments(enum_object->elements TSRMLS_CC, (apply_func_args_t)g_enum_apply_set, 2, &lvalue, &found TSRMLS_CC);
+	zend_hash_apply_with_arguments(enum_object->elements TSRMLS_CC, (apply_func_args_t)glib_enum_apply_set, 2, &lvalue, &found TSRMLS_CC);
 
 	if (!found) {
 		zend_throw_exception_ex(spl_ce_UnexpectedValueException, 0 TSRMLS_CC, "Value provided is not a const in enum %s", enum_object->std.ce->name);
@@ -307,10 +315,10 @@ static void g_enum_set(zval **zobject, zval *value TSRMLS_DC)
 }
 /* }}} */
 
-/* {{{ g_enum_cast */
-static int g_enum_cast(zval *readobj, zval *writeobj, int type TSRMLS_DC)
+/* {{{ glib_enum_cast */
+static int glib_enum_cast(zval *readobj, zval *writeobj, int type TSRMLS_DC)
 {
-	g_enum_object *enum_object = (g_enum_object *) zend_object_store_get_object(readobj TSRMLS_CC);
+	glib_enum_object *enum_object = (glib_enum_object *) zend_object_store_get_object(readobj TSRMLS_CC);
 
 	ZVAL_LONG(writeobj, enum_object->value);
 	convert_to_explicit_type(writeobj, type);
@@ -318,15 +326,15 @@ static int g_enum_cast(zval *readobj, zval *writeobj, int type TSRMLS_DC)
 }
 /* }}} */
 
-/* {{{ g_enum_compare */
-static int g_enum_compare(zval *z1, zval *z2 TSRMLS_DC)
+/* {{{ glib_enum_compare */
+static int glib_enum_compare(zval *z1, zval *z2 TSRMLS_DC)
 {
 	if (Z_TYPE_P(z1) == IS_OBJECT && Z_TYPE_P(z2) == IS_OBJECT &&
-		instanceof_function(Z_OBJCE_P(z1), ce_g_enum TSRMLS_CC) &&
-		instanceof_function(Z_OBJCE_P(z2), ce_g_enum TSRMLS_CC)) {
+		instanceof_function(Z_OBJCE_P(z1), ce_glib_enum TSRMLS_CC) &&
+		instanceof_function(Z_OBJCE_P(z2), ce_glib_enum TSRMLS_CC)) {
 
-			g_enum_object *enum1 = (g_enum_object *) zend_object_store_get_object(z1 TSRMLS_CC);
-			g_enum_object *enum2 = (g_enum_object *) zend_object_store_get_object(z2 TSRMLS_CC);
+			glib_enum_object *enum1 = (glib_enum_object *) zend_object_store_get_object(z1 TSRMLS_CC);
+			glib_enum_object *enum2 = (glib_enum_object *) zend_object_store_get_object(z2 TSRMLS_CC);
 
 			return (enum1->value == enum2->value) ? 0 : ((enum1->value < enum2->value) ? -1 : 1);
 		}
@@ -335,15 +343,15 @@ static int g_enum_compare(zval *z1, zval *z2 TSRMLS_DC)
 }
 /* }}} */
 
-/* {{{ g_enum_clone */
-static zend_object_value g_enum_clone(zval *zobject TSRMLS_DC)
+/* {{{ glib_enum_clone */
+static zend_object_value glib_enum_clone(zval *zobject TSRMLS_DC)
 {
 	zend_object_value retval;
-	g_enum_object *new_object;
-	g_enum_object *old_object = (g_enum_object *) zend_object_store_get_object(zobject TSRMLS_CC);
+	glib_enum_object *new_object;
+	glib_enum_object *old_object = (glib_enum_object *) zend_object_store_get_object(zobject TSRMLS_CC);
 
-	retval = g_enum_object_create(old_object->std.ce TSRMLS_CC);
-	new_object = (g_enum_object *) zend_object_store_get_object_by_handle(retval.handle TSRMLS_CC);
+	retval = glib_enum_object_create(old_object->std.ce TSRMLS_CC);
+	new_object = (glib_enum_object *) zend_object_store_get_object_by_handle(retval.handle TSRMLS_CC);
 
 	zend_objects_clone_members(&new_object->std, retval, &old_object->std, Z_OBJ_HANDLE_P(zobject) TSRMLS_CC);
 
@@ -353,12 +361,12 @@ static zend_object_value g_enum_clone(zval *zobject TSRMLS_DC)
 }
 /* }}} */
 
-/* {{{ g_enum_debug_info */
-static HashTable* g_enum_debug_info(zval *obj, int *is_temp TSRMLS_DC)
+/* {{{ glib_enum_debug_info */
+static HashTable* glib_enum_debug_info(zval *obj, int *is_temp TSRMLS_DC)
 {
 	HashTable *debug_info, *std_props;
 	zval *elements, *value;
-	g_enum_object *enum_object = (g_enum_object *) zend_object_store_get_object(obj TSRMLS_CC);
+	glib_enum_object *enum_object = (glib_enum_object *) zend_object_store_get_object(obj TSRMLS_CC);
 
 	ALLOC_HASHTABLE(debug_info);
 	zend_hash_init(debug_info, 2, NULL, ZVAL_PTR_DTOR, 0);
@@ -368,7 +376,7 @@ static HashTable* g_enum_debug_info(zval *obj, int *is_temp TSRMLS_DC)
 
 	MAKE_STD_ZVAL(elements);
 	array_init(elements);
-	zend_hash_apply_with_arguments(enum_object->elements TSRMLS_CC, (apply_func_args_t)g_enum_collect_elements, 1, elements);
+	zend_hash_apply_with_arguments(enum_object->elements TSRMLS_CC, (apply_func_args_t)glib_enum_collect_elements, 1, elements);
 	zend_hash_update(debug_info, "__elements", sizeof("__elements"), (void*)&elements, sizeof(zval *), NULL);
 
 	MAKE_STD_ZVAL(value);
@@ -385,7 +393,7 @@ static HashTable* g_enum_debug_info(zval *obj, int *is_temp TSRMLS_DC)
 ------------------------------------------------------------------*/
 
 /* {{{ class methods */
-static const zend_function_entry g_enum_methods[] = {
+static const zend_function_entry glib_enum_methods[] = {
 	PHP_ME(Enum, __construct, Enum___construct_args, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
 	PHP_ME(Enum, getName, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME(Enum, getElements, NULL, ZEND_ACC_PUBLIC)
@@ -394,21 +402,21 @@ static const zend_function_entry g_enum_methods[] = {
 /* }}} */
 
 /* {{{ PHP_MINIT_FUNCTION */
-PHP_MINIT_FUNCTION(g_Enum)
+PHP_MINIT_FUNCTION(glib_Enum)
 {
 	zend_class_entry ce;
-	INIT_NS_CLASS_ENTRY(ce, G_NAMESPACE, "Enum", g_enum_methods);
-	ce_g_enum = zend_register_internal_class(&ce TSRMLS_CC);
-	ce_g_enum->ce_flags |= ZEND_ACC_EXPLICIT_ABSTRACT_CLASS;
+	INIT_NS_CLASS_ENTRY(ce, GLIB_NAMESPACE, "Enum", glib_enum_methods);
+	ce_glib_enum = zend_register_internal_class(&ce TSRMLS_CC);
+	ce_glib_enum->ce_flags |= ZEND_ACC_EXPLICIT_ABSTRACT_CLASS;
 
-	ce_g_enum->create_object = g_enum_object_create;
-	memcpy(&g_enum_handlers, &std_object_handlers, sizeof(zend_object_handlers));
-	g_enum_handlers.cast_object = g_enum_cast;
-	g_enum_handlers.get_debug_info = g_enum_debug_info;
-	g_enum_handlers.get = g_enum_get;
-	g_enum_handlers.set = g_enum_set;
-	g_enum_handlers.clone_obj = g_enum_clone;
-	g_enum_handlers.compare_objects = g_enum_compare;
+	ce_glib_enum->create_object = glib_enum_object_create;
+	memcpy(&glib_enum_handlers, &std_object_handlers, sizeof(zend_object_handlers));
+	glib_enum_handlers.cast_object = glib_enum_cast;
+	glib_enum_handlers.get_debug_info = glib_enum_debug_info;
+	glib_enum_handlers.get = glib_enum_get;
+	glib_enum_handlers.set = glib_enum_set;
+	glib_enum_handlers.clone_obj = glib_enum_clone;
+	glib_enum_handlers.compare_objects = glib_enum_compare;
 
 	return SUCCESS;
 }

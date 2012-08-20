@@ -1,12 +1,12 @@
 --TEST--
-g class listing
+glib class listing
 --SKIPIF--
 <?php
-if(!extension_loaded('g')) die('skip - G extension not available');
+include __DIR__ . '/skipif.inc';
 ?>
 --FILE--
 <?php
-$ext = new ReflectionExtension('g');
+$ext = new ReflectionExtension('glib');
 var_dump($ext->getClassNames());
 ?>
 = DONE =

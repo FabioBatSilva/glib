@@ -1,13 +1,13 @@
-G
+G Namespace (GLib)
 =============
-The gtkforphp g extension provides some base objects for use with all glib and gobject extensions.
-This includes structs wrapped as "strict" PHP classes, enum objects, exceptions for gerror
-handling, string and unicode string classes.
 
-These types can be used on their own, but this extension also is used by almost all other
-gtkforphp extensions.  Additional items maybe added later
+The gtkforphp glib extension provides languages bindings for the GLib.
+Documentation and information about the library can be found at http://developer.gnome.org/glib/stable/
 
-You can send comments, patches, questions [here on github](https://github.com/gtkforphp/g/issues)
+Right now the master branch only provides some simple hand coded functionality for other extensions
+such as an enum class and GError handling, the rest will largely be generated.
+
+You can send comments, patches, questions [here on github](https://github.com/gtkforphp/glib/issues)
 
 This is still an experimental extension.
 

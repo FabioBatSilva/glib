@@ -2,7 +2,7 @@
 G\Enum debug info handler;
 --SKIPIF--
 <?php
-if(!extension_loaded('g')) die('skip - G extension not available');
+include __DIR__ . '/../../skipif.inc';
 ?>
 --FILE--
 <?php
