@@ -25,7 +25,7 @@ zend_class_entry *ce_glib_exception;
 ------------------------------------------------------------------*/
 
 /* {{{ exported function to take a gerror, throw an exception, and clear the error */
-PHP_GLIB_API zend_bool php_g_handle_gerror(GError **error TSRMLS_DC)
+PHP_GLIB_API zend_bool php_glib_handle_gerror(GError **error TSRMLS_DC)
 {
 	zval *exception;
 

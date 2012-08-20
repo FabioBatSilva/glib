@@ -30,7 +30,7 @@
 #include <php.h>
 
 #ifdef PHP_WIN32
-#  ifdef G_EXPORTS
+#  ifdef GLIB_EXPORTS
 #    define PHP_GLIB_API __declspec(dllexport)
 #  elif defined(COMPILE_DL_GLIB)
 #    define PHP_GLIB_API __declspec(dllimport)
@@ -55,7 +55,7 @@ extern PHP_GLIB_API zend_class_entry *ce_glib_unicode;
 /* so we don't have to include glib.h for one define */
 typedef struct _GError GError;
 
-extern PHP_GLIB_API zend_bool php_g_handle_gerror(GError **error TSRMLS_DC);
+extern PHP_GLIB_API zend_bool php_glib_handle_gerror(GError **error TSRMLS_DC);
 extern PHP_GLIB_API long php_g_get_enum_value(zval** enumclass TSRMLS_DC);
 extern PHP_GLIB_API void php_g_set_enum_value(zval** enumclass, long value TSRMLS_DC);
 
