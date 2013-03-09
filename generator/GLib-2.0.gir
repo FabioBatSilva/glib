@@ -18852,12 +18852,6 @@ list to the &lt;literal&gt;g_spawn...&lt;/literal&gt; function.</doc>
               value="64"
               c:identifier="G_SPAWN_FILE_AND_ARGV_ZERO"/>
     </bitfield>
-    <record name="StatBuf" c:type="GStatBuf" disguised="1">
-      <doc xml:whitespace="preserve">A type corresponding to the appropriate struct type for the stat
-system call, depending on the platform and/or compiler being used.
-
-See g_stat() for more information.</doc>
-    </record>
     <record name="String"
             c:type="GString"
             glib:type-name="GString"
